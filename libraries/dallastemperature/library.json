@@ -1,0 +1,24 @@
+{
+  "Kind": "libraries",
+  "Id": "dallastemperature",
+  "Name": "dallastemperature",
+  "Version": "1.0.0",
+  "Description": "dallastemperature",
+  "Category": "libraries",
+  "Manifest": "libraries/dallastemperature/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "DallasTemperature.cpp",
+      "Type": "source",
+      "Size": 3664,
+      "Sha256": "3e614537257cd95b43822c4d778e68745dafa8a7e123bd405764829d41adfe34"
+    },
+    {
+      "Path": "include/DallasTemperature.h",
+      "Type": "header",
+      "Size": 849,
+      "Sha256": "d469a525733d5296a1748232707a07ff3d8dd45bcf5f49958fcfe7849f1e4586"
+    }
+  ]
+}

@@ -1,8 +1,0 @@
-{
-  "id": "U8glib",
-  "name": "U8glib SSD1306 fake display",
-  "version": "1.0.0",
-  "description": "Fake U8glib pro ORIScore ESPsim: SSD1306 OLED I2C/SPI 128x64 a 128x32 s live náhledem.",
-  "type": "library",
-  "headers": ["U8glib.h"]
-}

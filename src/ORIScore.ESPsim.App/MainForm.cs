@@ -681,13 +681,11 @@ public sealed class MainForm : Form
             e.Cancel = true;
         };
 
-        _sensorGrid.Columns.Add(new DataGridViewComboBoxColumn
+        _sensorGrid.Columns.Add(new DataGridViewTextBoxColumn
         {
             Name = "Type",
             HeaderText = "Typ HW",
-            FillWeight = 95,
-            DataSource = VirtualHwTypes.ToList(),
-            FlatStyle = FlatStyle.Flat
+            FillWeight = 120
         });
 
         _sensorGrid.Columns.Add(new DataGridViewTextBoxColumn
@@ -714,22 +712,22 @@ public sealed class MainForm : Form
         _sensorGrid.Columns.Add(new DataGridViewTextBoxColumn
         {
             Name = "Value",
-            HeaderText = "Hodnota",
-            FillWeight = 80
+            HeaderText = "Hodnota / teplota / napětí / frekvence",
+            FillWeight = 120
         });
 
         _sensorGrid.Columns.Add(new DataGridViewTextBoxColumn
         {
             Name = "Humidity",
-            HeaderText = "Vlhkost %",
-            FillWeight = 75
+            HeaderText = "Vlhkost / proud / pulzy/l",
+            FillWeight = 110
         });
 
         _sensorGrid.Columns.Add(new DataGridViewTextBoxColumn
         {
             Name = "Pressure",
-            HeaderText = "Tlak",
-            FillWeight = 75
+            HeaderText = "Tlak / výkon",
+            FillWeight = 90
         });
 
         _sensorGrid.Columns.Add(new DataGridViewCheckBoxColumn
@@ -797,11 +795,6 @@ public sealed class MainForm : Form
     private void AddSensorRow(string type, string name, string pin, string address, string value, string humidity, string pressure, bool connected)
     {
         int row = _sensorGrid.Rows.Add();
-
-        var typeCol = _sensorGrid.Columns["Type"] as DataGridViewComboBoxColumn;
-
-        if (typeCol != null && typeCol.DataSource == null && !typeCol.Items.Contains(type))
-            typeCol.Items.Add(type);
 
         _sensorGrid.Rows[row].Cells["Type"].Value = type;
         _sensorGrid.Rows[row].Cells["Name"].Value = name;
@@ -1413,10 +1406,28 @@ public sealed class MainForm : Form
             if (e.Data != null && !IsDisposed)
                 BeginInvoke(() => HandleRuntimeLine("ERR " + e.Data));
         };
-        _firmwareProcess.Exited += (_, _) =>
+        _firmwareProcess.Exited += (sender, _) =>
         {
+            int? exitCode = null;
+
+            try
+            {
+                if (sender is Process p)
+                    exitCode = p.ExitCode;
+            }
+            catch
+            {
+                // ignore
+            }
+
             if (!IsDisposed)
-                BeginInvoke(() => { AppendLog("FW", "Firmware exited"); UpdateStatus(); });
+            {
+                BeginInvoke(() =>
+                {
+                    AppendLog("FW", "Firmware exited, code=" + (exitCode?.ToString() ?? "?"));
+                    UpdateStatus();
+                });
+            }
         };
 
         _firmwareProcess.Start();

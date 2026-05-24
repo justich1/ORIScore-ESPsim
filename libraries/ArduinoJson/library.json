@@ -1,0 +1,18 @@
+{
+  "Kind": "libraries",
+  "Id": "ArduinoJson",
+  "Name": "ArduinoJson",
+  "Version": "1.0.0",
+  "Description": "ORIScore ESPsim fake/sim knihovna",
+  "Category": "sim",
+  "Manifest": "libraries/ArduinoJson/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/ArduinoJson.h",
+      "Type": "header",
+      "Size": 24656,
+      "Sha256": "c4829a700b565470d6d7d45a73724d54601efdcb7e4d717603f10a32a9925bf2"
+    }
+  ]
+}

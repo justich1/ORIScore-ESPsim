@@ -1,0 +1,20 @@
+{
+  "Kind": "libraries",
+  "Id": "DHT",
+  "Name": "DHT sensor library",
+  "Version": "1.0.0-orisim",
+  "Description": "ORIScore ESPsim fake/sim DHT knihovna kompatibilní s běžnou Adafruit DHT API.",
+  "Category": "sim",
+  "Manifest": "libraries/DHT/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/DHT.h",
+      "Type": "header"
+    },
+    {
+      "Path": "src/DHT.cpp",
+      "Type": "source"
+    }
+  ]
+}

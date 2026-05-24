@@ -413,12 +413,6 @@ Při hlášení chyby je ideální přiložit:
 
 MIT
 
-Doporučené možnosti:
-
-* MIT pro otevřené komunitní použití,
-* GPL, pokud chceš vynutit zveřejnění odvozených úprav,
-* vlastní licence, pokud chceš projekt držet částečně omezený.
-
 ---
 
 ## Stav projektu

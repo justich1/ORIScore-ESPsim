@@ -987,16 +987,35 @@ public sealed class MainForm : Form
         {
             string type = JsonString(d, "type", "DS18B20");
             string name = JsonString(d, "name", "");
-            string pin = JsonString(d, "pin", JsonString(d, "data", JsonString(d, "uart", JsonString(d, "address", "GPIO4"))));
+            string pin = JsonString(d, "pin", JsonString(d, "data", JsonString(d, "uart", "")));
+
+            if (string.IsNullOrWhiteSpace(pin))
+            {
+                // I2C JSONy mívají sda/scl/address místo jednoho pinu.
+                // Pro Virtual HW stačí symbolický pin I2C, knihovny potom párují podle address.
+                if (d.TryGetProperty("sda", out _) || d.TryGetProperty("scl", out _))
+                    pin = "I2C";
+                else
+                    pin = JsonString(d, "address", "GPIO4");
+            }
+
             string address = JsonString(d, "address", JsonString(d, "id", ""));
+
             string value =
                 JsonValueAsText(d, "temperature",
                     JsonValueAsText(d, "value",
                         JsonValueAsText(d, "ppm",
                             JsonValueAsText(d, "busVoltage",
-                                JsonValueAsText(d, "state", "")))));
-            string humidity = JsonValueAsText(d, "humidity", "");
-            string pressure = JsonValueAsText(d, "pressure", "");
+                                JsonValueAsText(d, "state",
+                                    JsonValueAsText(d, "frequency", ""))))));
+
+            string humidity = JsonValueAsText(d, "humidity",
+                JsonValueAsText(d, "current",
+                    JsonValueAsText(d, "pulsesPerLiter", "")));
+
+            string pressure = JsonValueAsText(d, "pressure",
+                JsonValueAsText(d, "power", ""));
+
             bool connected = JsonBool(d, "connected", true);
 
             AddSensorRow(type, name, pin, address, value, humidity, pressure, connected);

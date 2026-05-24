@@ -98,37 +98,6 @@ Přesná adresa a port se mohou lišit podle nastavení simulátoru.
 
 ---
 
-## Doporučená struktura projektu
-
-```text
-ORIScore-ESPsim/
-├── ORIScore ESPsim.exe
-├── README.md
-├── config/
-│   ├── boards/
-│   │   ├── esp8266_nodemcu_v3.json
-│   │   ├── esp32_c3_generic.json
-│   │   └── esp32_s3_generic.json
-│   └── hardware/
-│       ├── aht20_i2c.json
-│       ├── ds18b20_onewire.json
-│       └── modem_at.json
-├── libraries/
-│   ├── Arduino.h
-│   ├── ESP8266WiFi.h
-│   ├── ESP8266WebServer.h
-│   ├── LittleFS.h
-│   ├── FS.h
-│   ├── OneWire.h
-│   ├── DallasTemperature.h
-│   ├── Updater.h
-│   └── ArduinoJson.h
-├── examples/
-│   ├── SmokeTest.ino
-│   └── WebServerTest.ino
-└── Builds/
-    └── Current/
-```
 
 Cílem je držet simulátor přenosný vedle EXE. Knihovny a profily je možné verzovat samostatně a podle potřeby aktualizovat z repozitáře.
 

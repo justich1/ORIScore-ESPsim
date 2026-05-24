@@ -411,7 +411,7 @@ Při hlášení chyby je ideální přiložit:
 
 ## Licence
 
-Doplň podle zvolené licence projektu.
+MIT
 
 Doporučené možnosti:
 

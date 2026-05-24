@@ -1,0 +1,66 @@
+{
+  "Kind": "libraries",
+  "Id": "WiFi_ESP",
+  "Name": "WiFi_ESP",
+  "Version": "1.0.0",
+  "Description": "ORIScore ESPsim fake/sim knihovna",
+  "Category": "sim",
+  "Manifest": "libraries/WiFi_ESP/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/ESP8266WiFi.h",
+      "Type": "header",
+      "Size": 3544,
+      "Sha256": "80458790aa72d8a289cb598d03331ab76dcfcb8d6b59b925d8efe84aa722a28f"
+    },
+    {
+      "Path": "include/WiFi.h",
+      "Type": "header",
+      "Size": 38,
+      "Sha256": "8dc6a55bcb87444bee8d30bffd7f546954e6f73094cd7bdd09b73ccc53618430"
+    },
+    {
+      "Path": "include/WiFiUdp.h",
+      "Type": "header",
+      "Size": 4507,
+      "Sha256": "5f5e40f84795ec87f8a32f439fad1c239fbd0618dca720d7f5884884ade24527"
+    },
+    {
+      "Path": "include/WiFiManager.h",
+      "Type": "header",
+      "Size": 7755,
+      "Sha256": "1c57e84437854ea310de8c66cde1d568628f071842ae934ddb50456ad89bdd3a"
+    },
+    {
+      "Path": "include/HTTPClient.h",
+      "Type": "header",
+      "Size": 4209,
+      "Sha256": "f26b324ce0c4d64f8323dca36ea15608278603f06c8df84b859a6ffe254e7259"
+    },
+    {
+      "Path": "include/ESP8266HTTPClient.h",
+      "Type": "header",
+      "Size": 37,
+      "Sha256": "f932c92799ec6732a274645dc34f56c335643018b40ca1bf9fe4e1d8d0b9ec5c"
+    },
+    {
+      "Path": "include/Preferences.h",
+      "Type": "header",
+      "Size": 2004,
+      "Sha256": "bfb2f2af441c56c50dc37812fc6f20240bb9ba3409b0ea0ba5a9d4e1165625b0"
+    },
+    {
+      "Path": "include/NTPClient.h",
+      "Type": "header",
+      "Size": 3581,
+      "Sha256": "c2614dab9d8a1df5d9b61503a5a447e75a50a17a5a75337a273481f69cc9c1c4"
+    },
+    {
+      "Path": "src/ESP8266WiFi.cpp",
+      "Type": "source",
+      "Size": 425,
+      "Sha256": "ed386617070bb0f469f1ca13a782aedee5c1f4d7dccfad72b7ebfcd31b838ade"
+    }
+  ]
+}

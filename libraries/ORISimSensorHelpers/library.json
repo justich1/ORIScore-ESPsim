@@ -1,0 +1,12 @@
+{
+  "Kind": "libraries",
+  "Id": "ORISimSensorHelpers",
+  "Name": "ORISim Sensor Helpers",
+  "Version": "1.0.0-orisim",
+  "Description": "Pomocné inline funkce pro čtení ORIScore ESPsim Virtual HW zařízení z knihoven a testovacích INO.",
+  "Category": "sim",
+  "Manifest": "libraries/ORISimSensorHelpers/library.json",
+  "Files": [
+    { "Path": "include/ORISimSensorHelpers.h", "Type": "header" }
+  ]
+}

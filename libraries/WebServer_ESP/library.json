@@ -1,0 +1,30 @@
+{
+  "Kind": "libraries",
+  "Id": "WebServer_ESP",
+  "Name": "WebServer_ESP",
+  "Version": "1.0.0",
+  "Description": "ORIScore ESPsim fake/sim knihovna",
+  "Category": "sim",
+  "Manifest": "libraries/WebServer_ESP/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/ESP8266WebServer.h",
+      "Type": "header",
+      "Size": 3612,
+      "Sha256": "f59546f1ec8825f4de9508fad79bf26801e0b03ae0437aaf10148746420c3540"
+    },
+    {
+      "Path": "include/WebServer.h",
+      "Type": "header",
+      "Size": 79,
+      "Sha256": "4f481c3b0ad0547d9f1a06ab19c48fe2c9f9efb2b0d0bf2275f19fae17dde289"
+    },
+    {
+      "Path": "src/ESP8266WebServer.cpp",
+      "Type": "source",
+      "Size": 12788,
+      "Sha256": "9e25aad140cf43a2c8de36b60fabf71f075cd8984fbe69c5dbeb2ff0b25746b0"
+    }
+  ]
+}

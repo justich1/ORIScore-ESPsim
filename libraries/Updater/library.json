@@ -1,0 +1,30 @@
+{
+  "Kind": "libraries",
+  "Id": "Updater",
+  "Name": "Updater",
+  "Version": "1.0.0",
+  "Description": "ORIScore ESPsim fake/sim knihovna",
+  "Category": "sim",
+  "Manifest": "libraries/Updater/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/Update.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "775bdfa774478b96004a0b7bcc5d2c0a5824125c038d2426fd64bfc6a67c2604"
+    },
+    {
+      "Path": "include/Updater.h",
+      "Type": "header",
+      "Size": 688,
+      "Sha256": "c615fffa364a16533d5a68db0a10f81d3a6d19c07cfddfc86c47a03599245fb3"
+    },
+    {
+      "Path": "src/Updater.cpp",
+      "Type": "source",
+      "Size": 45,
+      "Sha256": "71bb1c79f4a26385d3b1cfb5eb052dd5d77caaaaa63b646a4c137317cceec1e6"
+    }
+  ]
+}

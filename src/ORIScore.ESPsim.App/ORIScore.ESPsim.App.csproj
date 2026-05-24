@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\boards\*.json" Link="boards\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\configs\**\*.*" Link="configs\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\libraries\repo\**\*.*" Link="libraries\repo\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="BuildAndCopyRunner" AfterTargets="Build">
+    <MSBuild Projects="..\ORIScore.ESPsim.Runner\ORIScore.ESPsim.Runner.csproj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <ItemGroup>
+      <RunnerFiles Include="..\ORIScore.ESPsim.Runner\bin\$(Configuration)\net8.0\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RunnerFiles)" DestinationFolder="$(OutputPath)runner\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RunnerFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

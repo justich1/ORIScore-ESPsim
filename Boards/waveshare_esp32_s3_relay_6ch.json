@@ -1,0 +1,213 @@
+{
+  "id": "waveshare_esp32_s3_relay_6ch",
+  "name": "Waveshare ESP32-S3 Relay 6CH",
+  "mcu": "ESP32-S3",
+  "defaultTimeScale": 1,
+  "webPort": 18088,
+  "pins": [
+    {
+      "boardPin": "GPIO1",
+      "gpio": 1,
+      "role": "Relay 1 / UT ventil otevrit",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO2",
+      "gpio": 2,
+      "role": "Relay 2 / UT ventil zavrit",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO4",
+      "gpio": 4,
+      "role": "OneWire default / DS18B20",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO5",
+      "gpio": 5,
+      "role": "Fault input / poruchovy vstup",
+      "activeLow": true,
+      "input": true,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "GPIO15",
+      "gpio": 15,
+      "role": "LoRa UART RX / GPIO",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "GPIO16",
+      "gpio": 16,
+      "role": "LoRa UART TX / GPIO",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "GPIO17",
+      "gpio": 17,
+      "role": "RS485 UART RX / onboard RS485 reserve",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "GPIO18",
+      "gpio": 18,
+      "role": "RS485 UART TX / onboard RS485 reserve",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "GPIO41",
+      "gpio": 41,
+      "role": "Relay 3 / TV ventil otevrit",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO42",
+      "gpio": 42,
+      "role": "Relay 4 / TV ventil zavrit",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO45",
+      "gpio": 45,
+      "role": "Relay 5 / cerpadlo UT / strapping pin",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Strapping pin. Overit, ze rele ani externi zatez neovlivni boot."
+    },
+    {
+      "boardPin": "GPIO46",
+      "gpio": 46,
+      "role": "Relay 6 / porucha / strapping pin",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Strapping pin. Na nekterych ESP32-S3 deskach muze byt omezeny; overit podle schematu Waveshare."
+    }
+  ],
+  "aliases": {
+    "GPIO1": 1,
+    "GPIO2": 2,
+    "GPIO4": 4,
+    "GPIO5": 5,
+    "GPIO15": 15,
+    "GPIO16": 16,
+    "GPIO17": 17,
+    "GPIO18": 18,
+    "GPIO41": 41,
+    "GPIO42": 42,
+    "GPIO45": 45,
+    "GPIO46": 46,
+    "RELAY1": 1,
+    "RELAY2": 2,
+    "RELAY3": 41,
+    "RELAY4": 42,
+    "RELAY5": 45,
+    "RELAY6": 46,
+    "UT_OPEN": 1,
+    "UT_CLOSE": 2,
+    "TV_OPEN": 41,
+    "TV_CLOSE": 42,
+    "PUMP_UT": 45,
+    "ALARM": 46,
+    "FAULT_IN": 5,
+    "ONEWIRE": 4,
+    "LORA_RX": 15,
+    "LORA_TX": 16
+  },
+  "uart": [
+    {
+      "name": "Serial",
+      "tx": 43,
+      "rx": 44,
+      "baud": 115200,
+      "console": true,
+      "role": "UART0 / USB serial console"
+    },
+    {
+      "name": "Serial1",
+      "tx": 16,
+      "rx": 15,
+      "baud": 9600,
+      "console": false,
+      "role": "LoRa modem UART"
+    },
+    {
+      "name": "Serial2",
+      "tx": 18,
+      "rx": 17,
+      "baud": 9600,
+      "console": false,
+      "role": "Onboard RS485 reserve"
+    }
+  ],
+  "oneWire": [
+    {
+      "name": "OneWire bus",
+      "defaultPin": "GPIO4",
+      "gpio": 4,
+      "supportedDevices": [
+        "DS18B20"
+      ]
+    }
+  ],
+  "i2c": [],
+  "spi": [],
+  "relays": [
+    {
+      "name": "Relay 1",
+      "gpio": 1,
+      "activeLow": false,
+      "role": "UT ventil otevrit"
+    },
+    {
+      "name": "Relay 2",
+      "gpio": 2,
+      "activeLow": false,
+      "role": "UT ventil zavrit"
+    },
+    {
+      "name": "Relay 3",
+      "gpio": 41,
+      "activeLow": false,
+      "role": "TV ventil otevrit"
+    },
+    {
+      "name": "Relay 4",
+      "gpio": 42,
+      "activeLow": false,
+      "role": "TV ventil zavrit"
+    },
+    {
+      "name": "Relay 5",
+      "gpio": 45,
+      "activeLow": false,
+      "role": "Cerpadlo UT"
+    },
+    {
+      "name": "Relay 6",
+      "gpio": 46,
+      "activeLow": false,
+      "role": "Porucha / alarm"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "id": "esp32_c3_devkit_generic",
+  "name": "ESP32-C3 DevKit Generic",
+  "mcu": "ESP32-C3",
+  "defaultTimeScale": 1,
+  "webPort": 18088,
+
+  "pins": [
+    {
+      "boardPin": "GPIO0",
+      "gpio": 0,
+      "role": "GPIO / ADC / boot strap",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Strapping pin. Pozor na stav při bootu."
+    },
+    {
+      "boardPin": "GPIO1",
+      "gpio": 1,
+      "role": "GPIO / ADC",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO2",
+      "gpio": 2,
+      "role": "GPIO / ADC / strapping pin",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 1,
+      "warning": "Strapping pin. Na některých deskách ovlivňuje boot."
+    },
+    {
+      "boardPin": "GPIO3",
+      "gpio": 3,
+      "role": "GPIO / ADC",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO4",
+      "gpio": 4,
+      "role": "GPIO / ADC / OneWire default",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO5",
+      "gpio": 5,
+      "role": "GPIO / ADC / SPI MISO",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO6",
+      "gpio": 6,
+      "role": "GPIO / SPI MOSI",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO7",
+      "gpio": 7,
+      "role": "GPIO / SPI CS",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO8",
+      "gpio": 8,
+      "role": "GPIO / I2C SDA / boot button on some boards",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 1,
+      "warning": "Často BOOT tlačítko / strapping pin. LOW při bootu může spustit download mód."
+    },
+    {
+      "boardPin": "GPIO9",
+      "gpio": 9,
+      "role": "GPIO / I2C SCL / boot strap",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 1,
+      "warning": "Strapping pin. Pozor na stav při bootu."
+    },
+    {
+      "boardPin": "GPIO10",
+      "gpio": 10,
+      "role": "GPIO / SPI SCK",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+
+    {
+      "boardPin": "GPIO18",
+      "gpio": 18,
+      "role": "GPIO / USB D- on native USB boards",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Na deskách s native USB může být použitý pro USB."
+    },
+    {
+      "boardPin": "GPIO19",
+      "gpio": 19,
+      "role": "GPIO / USB D+ on native USB boards",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Na deskách s native USB může být použitý pro USB."
+    },
+    {
+      "boardPin": "GPIO20",
+      "gpio": 20,
+      "role": "GPIO / UART0 RX",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "GPIO21",
+      "gpio": 21,
+      "role": "GPIO / UART0 TX",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 1
+    }
+  ],
+
+  "aliases": {
+    "GPIO0": 0,
+    "GPIO1": 1,
+    "GPIO2": 2,
+    "GPIO3": 3,
+    "GPIO4": 4,
+    "GPIO5": 5,
+    "GPIO6": 6,
+    "GPIO7": 7,
+    "GPIO8": 8,
+    "GPIO9": 9,
+    "GPIO10": 10,
+    "GPIO18": 18,
+    "GPIO19": 19,
+    "GPIO20": 20,
+    "GPIO21": 21,
+
+    "D0": 0,
+    "D1": 1,
+    "D2": 2,
+    "D3": 3,
+    "D4": 4,
+    "D5": 5,
+    "D6": 6,
+    "D7": 7,
+    "D8": 8,
+    "D9": 9,
+    "D10": 10
+  },
+
+  "uart": [
+    {
+      "name": "Serial",
+      "tx": 21,
+      "rx": 20,
+      "baud": 115200,
+      "console": true,
+      "role": "UART0 / USB serial"
+    },
+    {
+      "name": "Serial1",
+      "tx": 7,
+      "rx": 6,
+      "baud": 9600,
+      "console": false,
+      "role": "Optional UART1"
+    }
+  ],
+
+  "oneWire": [
+    {
+      "name": "OneWire bus",
+      "defaultPin": "GPIO4",
+      "gpio": 4,
+      "supportedDevices": [
+        "DS18B20"
+      ]
+    }
+  ],
+
+  "i2c": [
+    {
+      "name": "Default I2C",
+      "sda": 8,
+      "scl": 9
+    }
+  ],
+
+  "spi": [
+    {
+      "name": "FSPI",
+      "sck": 10,
+      "miso": 5,
+      "mosi": 6,
+      "cs": 7
+    }
+  ]
+}

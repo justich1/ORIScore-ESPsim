@@ -1,0 +1,64 @@
+{
+  "id": "esp8266_nodemcu_v3_generic",
+  "name": "ESP8266 NodeMCU v3 - generic",
+  "mcu": "ESP8266",
+  "pins": [
+    {
+      "boardPin": "D0",
+      "gpio": 16,
+      "role": "GPIO16 / WAKE",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D1",
+      "gpio": 5,
+      "role": "GPIO5 / I2C SCL",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D2",
+      "gpio": 4,
+      "role": "GPIO4 / I2C SDA",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D3",
+      "gpio": 0,
+      "role": "GPIO0 / BOOT INPUT",
+      "activeLow": true,
+      "input": true,
+      "defaultValue": 1
+    },
+    {
+      "boardPin": "D4",
+      "gpio": 2,
+      "role": "GPIO2 / ONBOARD LED / ONEWIRE",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D5",
+      "gpio": 14,
+      "role": "GPIO14 / SPI SCLK",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D6",
+      "gpio": 12,
+      "role": "GPIO12 / SPI MISO",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D7",
+      "gpio": 13,
+      "role": "GPIO13 / SPI MOSI",
+      "activeLow": false
+    },
+    {
+      "boardPin": "D8",
+      "gpio": 15,
+      "role": "GPIO15 / SPI CS / BOOT",
+      "activeLow": false,
+      "defaultValue": 0
+    }
+  ]
+}

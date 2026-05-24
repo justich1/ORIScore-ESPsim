@@ -1,0 +1,298 @@
+{
+  "id": "esp32_devkit_generic",
+  "name": "ESP32 DevKit Generic",
+  "mcu": "ESP32",
+  "defaultTimeScale": 1,
+  "webPort": 18088,
+
+  "pins": [
+    {
+      "boardPin": "GPIO0",
+      "gpio": 0,
+      "role": "BOOT / GPIO",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 1,
+      "warning": "Boot pin. LOW při bootu spouští flash mód."
+    },
+    {
+      "boardPin": "GPIO2",
+      "gpio": 2,
+      "role": "GPIO / onboard LED na některých deskách",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO4",
+      "gpio": 4,
+      "role": "GPIO / ADC / touch",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO5",
+      "gpio": 5,
+      "role": "GPIO / SPI CS",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+
+    {
+      "boardPin": "GPIO12",
+      "gpio": 12,
+      "role": "GPIO / ADC / strapping pin",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Strapping pin. Pozor na stav při bootu."
+    },
+    {
+      "boardPin": "GPIO13",
+      "gpio": 13,
+      "role": "GPIO / ADC / touch",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO14",
+      "gpio": 14,
+      "role": "GPIO / ADC / touch",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO15",
+      "gpio": 15,
+      "role": "GPIO / ADC / touch / strapping pin",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0,
+      "warning": "Strapping pin. Pozor na stav při bootu."
+    },
+
+    {
+      "boardPin": "GPIO16",
+      "gpio": 16,
+      "role": "GPIO / UART2 RX",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO17",
+      "gpio": 17,
+      "role": "GPIO / UART2 TX",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO18",
+      "gpio": 18,
+      "role": "GPIO / SPI SCK",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO19",
+      "gpio": 19,
+      "role": "GPIO / SPI MISO",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+
+    {
+      "boardPin": "GPIO21",
+      "gpio": 21,
+      "role": "GPIO / I2C SDA",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO22",
+      "gpio": 22,
+      "role": "GPIO / I2C SCL",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO23",
+      "gpio": 23,
+      "role": "GPIO / SPI MOSI",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+
+    {
+      "boardPin": "GPIO25",
+      "gpio": 25,
+      "role": "GPIO / DAC / ADC",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO26",
+      "gpio": 26,
+      "role": "GPIO / DAC / ADC",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO27",
+      "gpio": 27,
+      "role": "GPIO / ADC / touch",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+
+    {
+      "boardPin": "GPIO32",
+      "gpio": 32,
+      "role": "GPIO / ADC / touch",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+    {
+      "boardPin": "GPIO33",
+      "gpio": 33,
+      "role": "GPIO / ADC / touch",
+      "activeLow": false,
+      "input": false,
+      "defaultValue": 0
+    },
+
+    {
+      "boardPin": "GPIO34",
+      "gpio": 34,
+      "role": "Input only / ADC",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 0,
+      "warning": "Pouze vstup. Nelze použít jako OUTPUT."
+    },
+    {
+      "boardPin": "GPIO35",
+      "gpio": 35,
+      "role": "Input only / ADC",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 0,
+      "warning": "Pouze vstup. Nelze použít jako OUTPUT."
+    },
+    {
+      "boardPin": "GPIO36",
+      "gpio": 36,
+      "role": "Input only / ADC VP",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 0,
+      "warning": "Pouze vstup. Nelze použít jako OUTPUT."
+    },
+    {
+      "boardPin": "GPIO39",
+      "gpio": 39,
+      "role": "Input only / ADC VN",
+      "activeLow": false,
+      "input": true,
+      "defaultValue": 0,
+      "warning": "Pouze vstup. Nelze použít jako OUTPUT."
+    }
+  ],
+
+  "aliases": {
+    "GPIO0": 0,
+    "GPIO2": 2,
+    "GPIO4": 4,
+    "GPIO5": 5,
+    "GPIO12": 12,
+    "GPIO13": 13,
+    "GPIO14": 14,
+    "GPIO15": 15,
+    "GPIO16": 16,
+    "GPIO17": 17,
+    "GPIO18": 18,
+    "GPIO19": 19,
+    "GPIO21": 21,
+    "GPIO22": 22,
+    "GPIO23": 23,
+    "GPIO25": 25,
+    "GPIO26": 26,
+    "GPIO27": 27,
+    "GPIO32": 32,
+    "GPIO33": 33,
+    "GPIO34": 34,
+    "GPIO35": 35,
+    "GPIO36": 36,
+    "GPIO39": 39
+  },
+
+  "uart": [
+    {
+      "name": "Serial",
+      "tx": 1,
+      "rx": 3,
+      "baud": 115200,
+      "console": true,
+      "role": "USB serial / UART0"
+    },
+    {
+      "name": "Serial1",
+      "tx": 10,
+      "rx": 9,
+      "baud": 115200,
+      "console": false,
+      "role": "UART1 / často koliduje s flash na některých deskách"
+    },
+    {
+      "name": "Serial2",
+      "tx": 17,
+      "rx": 16,
+      "baud": 9600,
+      "console": false,
+      "role": "UART2"
+    }
+  ],
+
+  "oneWire": [
+    {
+      "name": "OneWire bus",
+      "defaultPin": "GPIO4",
+      "gpio": 4,
+      "supportedDevices": [
+        "DS18B20"
+      ]
+    }
+  ],
+
+  "i2c": [
+    {
+      "name": "Default I2C",
+      "sda": 21,
+      "scl": 22
+    }
+  ],
+
+  "spi": [
+    {
+      "name": "VSPI",
+      "sck": 18,
+      "miso": 19,
+      "mosi": 23,
+      "cs": 5
+    }
+  ]
+}

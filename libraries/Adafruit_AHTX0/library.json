@@ -1,0 +1,13 @@
+{
+  "Kind": "libraries",
+  "Id": "Adafruit_AHTX0",
+  "Name": "Adafruit AHTX0 stub",
+  "Version": "1.0.0-orisim",
+  "Description": "AHT20/AHTX0 fake knihovna pro ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/Adafruit_AHTX0/library.json",
+  "Files": [
+    { "Path": "include/Adafruit_AHTX0.h", "Type": "header" },
+    { "Path": "src/Adafruit_AHTX0.cpp", "Type": "source" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "Kind": "libraries",
+  "Id": "Adafruit_BME280",
+  "Name": "Adafruit BME280 stub",
+  "Version": "1.0.0-orisim",
+  "Description": "BME280 fake knihovna pro ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/Adafruit_BME280/library.json",
+  "Files": [
+    { "Path": "include/Adafruit_BME280.h", "Type": "header" },
+    { "Path": "src/Adafruit_BME280.cpp", "Type": "source" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "Kind": "libraries",
+  "Id": "MQ135",
+  "Name": "MQ135 stub",
+  "Version": "1.0.0-orisim",
+  "Description": "Jednoduchá MQ135 fake knihovna pro ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/MQ135/library.json",
+  "Files": [
+    { "Path": "include/MQ135.h", "Type": "header" },
+    { "Path": "src/MQ135.cpp", "Type": "source" }
+  ]
+}

@@ -1763,9 +1763,9 @@ public sealed class MainForm : Form
         </head>
         <body>
           <div class="card">
-            <h1>ORIScore ESPsim</h1>
-            <p>Vyber <code>.ino</code>, dej <b>Build INO</b>, potom <b>Run firmware</b>.</p>
-            <p>Po startu firmware se sem načte skutečný web z fake <code>ESP8266WebServer</code>.</p>
+            <h1>ORIScore ESPsim alfa 0.0.1</h1>
+            <p>Vyber <code>.ino</code>, dej <b>Build INO</b>, potom <b>Spustit firmware</b>.</p>
+            <p>Po startu firmware se sem načte skutečný web z fake <code>WebServer</code>.</p>
           </div>
         </body>
         </html>

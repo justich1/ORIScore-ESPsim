@@ -1,0 +1,13 @@
+{
+  "Kind": "libraries",
+  "Id": "Adafruit_INA219",
+  "Name": "Adafruit INA219 stub",
+  "Version": "1.0.0-orisim",
+  "Description": "INA219 fake knihovna pro ORIScore ESPsim. Mapování: value=busVoltage, humidity=current_mA, pressure=power_mW.",
+  "Category": "sim",
+  "Manifest": "libraries/Adafruit_INA219/library.json",
+  "Files": [
+    { "Path": "include/Adafruit_INA219.h", "Type": "header" },
+    { "Path": "src/Adafruit_INA219.cpp", "Type": "source" }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "Kind": "libraries",
+  "Id": "arduino",
+  "Name": "Arduino",
+  "Version": "1.0.0",
+  "Description": "Arduino",
+  "Category": "libraries",
+  "Manifest": "libraries/arduino/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/Arduino.h",
+      "Type": "header",
+      "Size": 9649,
+      "Sha256": "c0b2032f14082131eb34308e583daae07695d930cd1869870c7c23ab2ada1db8"
+    },
+    {
+      "Path": "include/FS.h",
+      "Type": "header",
+      "Size": 35,
+      "Sha256": "8de9e1bcea15ae1274505f4095190b4bbead67eb09c306ac2a82bc0682a5a909"
+    },
+    {
+      "Path": "include/SoftwareSerial.h",
+      "Type": "header",
+      "Size": 211,
+      "Sha256": "42273973653b69991360846a9a8f83e3d40c7d9da2c1ae8cd7e7708ed1444a7f"
+    },
+    {
+      "Path": "include/Ticker.h",
+      "Type": "header",
+      "Size": 1447,
+      "Sha256": "22b60d5ffe6ce21080811b0d7a211fed08af79342965e53ffe1960190de6c912"
+    },
+    {
+      "Path": "src/Arduino.cpp",
+      "Type": "source",
+      "Size": 20987,
+      "Sha256": "51bf510792b4aeea12d21cce473a21c4b3330302cab0afdeee23fca3d2531480"
+    }
+  ]
+}

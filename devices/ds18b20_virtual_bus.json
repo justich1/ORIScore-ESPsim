@@ -1,0 +1,18 @@
+{
+  "id": "ds18b20_virtual_bus",
+  "name": "DS18B20 Virtual OneWire Bus",
+  "version": "1.0.0",
+  "description": "OneWire bus s DS18B20 čidly.",
+  "type": "onewire",
+  "devices": [
+    {
+      "type": "DS18B20",
+      "name": "venkovniCidlo",
+      "pin": "GPIO4",
+      "address": "28-000000000001",
+      "temperature": 12.5,
+      "connected": true,
+      "noise": 0.1
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "dht11_sensor",
+  "name": "DHT11",
+  "version": "1.0.0",
+  "description": "Digitální senzor teploty a vlhkosti.",
+  "type": "single_wire_custom",
+  "devices": [
+    {
+      "type": "DHT11",
+      "name": "dht11",
+      "pin": "GPIO4",
+      "temperature": 22.0,
+      "humidity": 45.0,
+      "connected": true,
+      "noise": 0.2
+    }
+  ]
+}

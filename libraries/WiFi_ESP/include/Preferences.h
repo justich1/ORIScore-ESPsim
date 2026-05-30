@@ -114,6 +114,17 @@ public:
     return it == _bytes.end() ? 0 : it->second.size();
   }
 
+uint8_t getUChar(const char* key, uint8_t defaultValue = 0) {
+    (void)key;
+    return defaultValue;
+}
+
+size_t putUChar(const char* key, uint8_t value) {
+    (void)key;
+    (void)value;
+    return 1;
+}
+
 private:
   String _name;
   bool _readOnly = false;

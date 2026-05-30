@@ -4,9 +4,20 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <stdint.h>
+#include <string.h>
 
 #ifndef U8X8_PIN_NONE
 #define U8X8_PIN_NONE 255
+#endif
+
+#ifndef ORISIM_U8G2_FONTS
+#define ORISIM_U8G2_FONTS
+
+static const uint8_t u8g2_font_6x12_tf[] = { 0 };
+static const uint8_t u8g2_font_logisoso18_tf[] = { 0 };
+static const uint8_t u8g2_font_6x13B_tf[] = { 0 };
+
 #endif
 
 #ifndef U8G2_R0
@@ -106,4 +117,28 @@ public:
                                          uint8_t clock = U8X8_PIN_NONE,
                                          uint8_t data = U8X8_PIN_NONE,
                                          uint8_t reset = U8X8_PIN_NONE);
+void setFont(const uint8_t* font) {
+    (void)font;
+}
+
+int getStrWidth(const char* s) {
+    if (!s) return 0;
+    return (int)strlen(s) * 6;
+}
+
+void drawBitmap(int x, int y, int w, int h, const uint8_t* bitmap) {
+    (void)x;
+    (void)y;
+    (void)w;
+    (void)h;
+    (void)bitmap;
+}
+
+void drawXBMP(int x, int y, int w, int h, const uint8_t* bitmap) {
+    (void)x;
+    (void)y;
+    (void)w;
+    (void)h;
+    (void)bitmap;
+}
 };

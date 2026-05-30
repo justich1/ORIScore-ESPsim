@@ -229,6 +229,54 @@ public:
   JsonArray() : _node(fakeJsonNode()) { _node->type = FakeJsonType::Array; }
   explicit JsonArray(std::shared_ptr<FakeJsonNode> node) : _node(node ? node : fakeJsonNode()) { _node->type = FakeJsonType::Array; }
 
+  // Compatibility with ArduinoJson API used by generated firmware.
+  // Real ArduinoJson JsonArray supports isNull() and range-based for loops.
+  bool isNull() const { return !_node || _node->type == FakeJsonType::Null; }
+  operator bool() const { return !isNull(); }
+
+  class iterator {
+  public:
+    using Inner = std::vector<std::shared_ptr<FakeJsonNode>>::iterator;
+
+    iterator() = default;
+    explicit iterator(Inner it) : _it(it) {}
+
+    JsonVariant operator*() const { return JsonVariant(*_it); }
+    iterator& operator++() { ++_it; return *this; }
+    iterator operator++(int) { iterator tmp(*this); ++_it; return tmp; }
+
+    bool operator==(const iterator& other) const { return _it == other._it; }
+    bool operator!=(const iterator& other) const { return _it != other._it; }
+
+  private:
+    Inner _it;
+  };
+
+  class const_iterator {
+  public:
+    using Inner = std::vector<std::shared_ptr<FakeJsonNode>>::const_iterator;
+
+    const_iterator() = default;
+    explicit const_iterator(Inner it) : _it(it) {}
+
+    JsonVariant operator*() const { return JsonVariant(*_it); }
+    const_iterator& operator++() { ++_it; return *this; }
+    const_iterator operator++(int) { const_iterator tmp(*this); ++_it; return tmp; }
+
+    bool operator==(const const_iterator& other) const { return _it == other._it; }
+    bool operator!=(const const_iterator& other) const { return _it != other._it; }
+
+  private:
+    Inner _it;
+  };
+
+  iterator begin() { ensureArray(); return iterator(_node->array.begin()); }
+  iterator end() { ensureArray(); return iterator(_node->array.end()); }
+  const_iterator begin() const { ensureArray(); return const_iterator(_node->array.begin()); }
+  const_iterator end() const { ensureArray(); return const_iterator(_node->array.end()); }
+  const_iterator cbegin() const { ensureArray(); return const_iterator(_node->array.begin()); }
+  const_iterator cend() const { ensureArray(); return const_iterator(_node->array.end()); }
+
   JsonObject createNestedObject() {
     ensureArray();
     auto child = fakeJsonNode();
@@ -419,6 +467,16 @@ inline JsonVariant& JsonVariant::operator=(const JsonObject& obj) { _node = obj.
 inline JsonVariant& JsonVariant::operator=(const JsonArray& arr) { _node = arr.node(); return *this; }
 inline JsonVariant::operator JsonObject() const { return JsonObject(_node); }
 inline JsonVariant::operator JsonArray() const { return JsonArray(_node); }
+
+// Compatibility helpers for code using ArduinoJson v6/v7 style:
+// JsonArray arr = variant.as<JsonArray>();
+// JsonObject obj = variant.as<JsonObject>();
+template <>
+inline JsonObject JsonVariant::as<JsonObject>() const { return JsonObject(_node); }
+
+template <>
+inline JsonArray JsonVariant::as<JsonArray>() const { return JsonArray(_node); }
+
 inline JsonArray JsonObject::createNestedArray(const char* key) {
   ensureObject();
   String k(key ? key : "");

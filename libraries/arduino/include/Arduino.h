@@ -24,6 +24,30 @@
 #include <algorithm>
 #include <ctime>
 
+#ifndef ADC_0db
+#define ADC_0db 0
+#endif
+
+#ifndef ADC_2_5db
+#define ADC_2_5db 1
+#endif
+
+#ifndef ADC_6db
+#define ADC_6db 2
+#endif
+
+#ifndef ADC_11db
+#define ADC_11db 3
+#endif
+
+inline void analogReadResolution(int bits) {
+    (void)bits;
+}
+
+inline void analogSetAttenuation(int attenuation) {
+    (void)attenuation;
+}
+
 using byte = uint8_t;
 using boolean = bool;
 using word = uint16_t;

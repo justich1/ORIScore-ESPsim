@@ -1,0 +1,18 @@
+{
+  "Kind": "libraries",
+  "Id": "DNSServer",
+  "Name": "DNS Server simulator stub",
+  "Version": "1.0.1-orisim",
+  "Description": "DNSServer compatibility layer for captive portal sketches in ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/DNSServer/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/DNSServer.h",
+      "Type": "header",
+      "Size": 2287,
+      "Sha256": "c4921fd4af739de31ca029b62f513d6c2fe58045ba97c2d08dcf8d176381d1e8"
+    }
+  ]
+}

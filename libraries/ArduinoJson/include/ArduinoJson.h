@@ -64,6 +64,11 @@ public:
   JsonVariant(const char* s) : _node(fakeJsonNode()) { *this = s; }
   JsonVariant(const String& s) : _node(fakeJsonNode()) { *this = s; }
   JsonVariant(bool v) : _node(fakeJsonNode()) { *this = v; }
+  JsonVariant(char v) : _node(fakeJsonNode()) { *this = v; }
+  JsonVariant(signed char v) : _node(fakeJsonNode()) { *this = v; }
+  JsonVariant(unsigned char v) : _node(fakeJsonNode()) { *this = v; }
+  JsonVariant(short v) : _node(fakeJsonNode()) { *this = v; }
+  JsonVariant(unsigned short v) : _node(fakeJsonNode()) { *this = v; }
   JsonVariant(int v) : _node(fakeJsonNode()) { *this = v; }
   JsonVariant(unsigned int v) : _node(fakeJsonNode()) { *this = v; }
   JsonVariant(long v) : _node(fakeJsonNode()) { *this = v; }
@@ -77,6 +82,11 @@ public:
   JsonVariant& operator=(const char* v) { _node->type = FakeJsonType::String; _node->s = v ? v : ""; return *this; }
   JsonVariant& operator=(const String& v) { _node->type = FakeJsonType::String; _node->s = v; return *this; }
   JsonVariant& operator=(bool v) { _node->type = FakeJsonType::Bool; _node->b = v; _node->i = v ? 1 : 0; _node->d = v ? 1.0 : 0.0; return *this; }
+  JsonVariant& operator=(char v) { return (*this = (long long)v); }
+  JsonVariant& operator=(signed char v) { return (*this = (long long)v); }
+  JsonVariant& operator=(unsigned char v) { return (*this = (unsigned long long)v); }
+  JsonVariant& operator=(short v) { return (*this = (long long)v); }
+  JsonVariant& operator=(unsigned short v) { return (*this = (unsigned long long)v); }
   JsonVariant& operator=(int v) { _node->type = FakeJsonType::Int; _node->i = v; _node->d = (double)v; return *this; }
   JsonVariant& operator=(unsigned int v) { _node->type = FakeJsonType::Int; _node->i = (long long)v; _node->d = (double)v; return *this; }
   JsonVariant& operator=(long v) { _node->type = FakeJsonType::Int; _node->i = v; _node->d = (double)v; return *this; }
@@ -118,10 +128,17 @@ public:
   const char* operator|(const char* def) const { return _node->type == FakeJsonType::String ? _node->s.c_str() : (def ? def : ""); }
   String operator|(const String& def) const { return _node->type == FakeJsonType::String ? _node->s : def; }
   bool operator|(bool def) const { return _node->type != FakeJsonType::Null ? as<bool>() : def; }
+  char operator|(char def) const { return _node->type != FakeJsonType::Null ? as<char>() : def; }
+  signed char operator|(signed char def) const { return _node->type != FakeJsonType::Null ? as<signed char>() : def; }
+  unsigned char operator|(unsigned char def) const { return _node->type != FakeJsonType::Null ? as<unsigned char>() : def; }
+  short operator|(short def) const { return _node->type != FakeJsonType::Null ? as<short>() : def; }
+  unsigned short operator|(unsigned short def) const { return _node->type != FakeJsonType::Null ? as<unsigned short>() : def; }
   int operator|(int def) const { return _node->type != FakeJsonType::Null ? as<int>() : def; }
   unsigned int operator|(unsigned int def) const { return _node->type != FakeJsonType::Null ? as<unsigned int>() : def; }
   long operator|(long def) const { return _node->type != FakeJsonType::Null ? as<long>() : def; }
   unsigned long operator|(unsigned long def) const { return _node->type != FakeJsonType::Null ? as<unsigned long>() : def; }
+  long long operator|(long long def) const { return _node->type != FakeJsonType::Null ? as<long long>() : def; }
+  unsigned long long operator|(unsigned long long def) const { return _node->type != FakeJsonType::Null ? as<unsigned long long>() : def; }
   float operator|(float def) const { return _node->type != FakeJsonType::Null ? as<float>() : def; }
   double operator|(double def) const { return _node->type != FakeJsonType::Null ? as<double>() : def; }
 
@@ -156,10 +173,17 @@ public:
   operator const char*() const { return _node->s.c_str(); }
   operator String() const { return _node->s; }
   operator bool() const { return as<bool>(); }
+  operator char() const { return as<char>(); }
+  operator signed char() const { return as<signed char>(); }
+  operator unsigned char() const { return as<unsigned char>(); }
+  operator short() const { return as<short>(); }
+  operator unsigned short() const { return as<unsigned short>(); }
   operator int() const { return as<int>(); }
   operator unsigned int() const { return as<unsigned int>(); }
   operator long() const { return as<long>(); }
   operator unsigned long() const { return as<unsigned long>(); }
+  operator long long() const { return as<long long>(); }
+  operator unsigned long long() const { return as<unsigned long long>(); }
   operator float() const { return as<float>(); }
   operator double() const { return as<double>(); }
 
@@ -306,10 +330,17 @@ public:
   void add(const String& v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(const char* v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(bool v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(char v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(signed char v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(unsigned char v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(short v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(unsigned short v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(int v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(unsigned int v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(long v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(unsigned long v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(long long v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
+  void add(unsigned long long v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(float v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
   void add(double v) { auto n = fakeJsonNode(); JsonVariant tmp(n); tmp = v; _node->array.push_back(n); }
 

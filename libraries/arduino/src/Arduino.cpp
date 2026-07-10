@@ -195,6 +195,7 @@ static std::string formatSignedBase(long long value, int base) {
 
 String::String() : v() {}
 String::String(const char* s) : v(s ? s : "") {}
+String::String(const __FlashStringHelper* s) : v(s ? reinterpret_cast<const char*>(s) : "") {}
 String::String(const std::string& s) : v(s) {}
 String::String(char c) : v(1, c) {}
 String::String(int n) : v(std::to_string(n)) {}
@@ -226,6 +227,7 @@ void String::toCharArray(char* buffer, size_t size) const {
 
 bool String::concat(const String& s) { v += s.v; return true; }
 bool String::concat(const char* s) { v += s ? s : ""; return true; }
+bool String::concat(const __FlashStringHelper* s) { v += s ? reinterpret_cast<const char*>(s) : ""; return true; }
 bool String::concat(char c) { v.push_back(c); return true; }
 bool String::concat(int n) { v += std::to_string(n); return true; }
 bool String::concat(unsigned int n) { v += std::to_string(n); return true; }
@@ -279,6 +281,7 @@ char String::operator[](size_t idx) const { return idx < v.size() ? v[idx] : '\0
 char& String::operator[](size_t idx) { if (idx >= v.size()) v.resize(idx + 1); return v[idx]; }
 String& String::operator+=(const String& other) { v += other.v; return *this; }
 String& String::operator+=(const char* other) { v += other ? other : ""; return *this; }
+String& String::operator+=(const __FlashStringHelper* other) { v += other ? reinterpret_cast<const char*>(other) : ""; return *this; }
 String& String::operator+=(char c) { v += c; return *this; }
 String& String::operator+=(int n) { v += std::to_string(n); return *this; }
 String& String::operator+=(unsigned int n) { v += std::to_string(n); return *this; }

@@ -16,11 +16,9 @@
   - EEPROM.get(address, data)
   - EEPROM.put(address, data)
 
-  V simulatoru uklada obsah do souboru:
-    devicefs/eeprom.bin
-
-  Pokud simulator nepodporuje filesystem cestu devicefs, knihovna i tak funguje
-  v RAM, jen nebude perzistentni mezi restartem aplikace.
+  Ukladani:
+  - zkusi devicefs/eeprom.bin
+  - kdyz cesta nejde, zkusi eeprom.bin v aktualnim pracovnim adresari
 */
 
 #include <Arduino.h>
@@ -48,18 +46,22 @@ public:
   template<typename T>
   T& get(int address, T& data) {
     uint8_t* ptr = reinterpret_cast<uint8_t*>(&data);
+
     for (size_t i = 0; i < sizeof(T); i++) {
       ptr[i] = read(address + (int)i);
     }
+
     return data;
   }
 
   template<typename T>
   const T& put(int address, const T& data) {
     const uint8_t* ptr = reinterpret_cast<const uint8_t*>(&data);
+
     for (size_t i = 0; i < sizeof(T); i++) {
       update(address + (int)i, ptr[i]);
     }
+
     return data;
   }
 

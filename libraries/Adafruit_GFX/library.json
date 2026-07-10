@@ -1,0 +1,24 @@
+{
+  "Kind": "libraries",
+  "Id": "Adafruit_GFX",
+  "Name": "Adafruit GFX simulator stub",
+  "Version": "1.0.1-orisim",
+  "Description": "Adafruit_GFX compatibility layer for ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/Adafruit_GFX/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/Adafruit_GFX.h",
+      "Type": "header",
+      "Size": 7878,
+      "Sha256": "1ded3703419d5c84c89bfe6b0074a00b12602dadebbace70b468aa311160218d"
+    },
+    {
+      "Path": "src/Adafruit_GFX.cpp",
+      "Type": "source",
+      "Size": 25,
+      "Sha256": "589d8893df48af907a6cab38a62d830fcba8162e18f6c3904f5868718c1afffc"
+    }
+  ]
+}

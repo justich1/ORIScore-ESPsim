@@ -24,30 +24,6 @@
 #include <algorithm>
 #include <ctime>
 
-#ifndef ADC_0db
-#define ADC_0db 0
-#endif
-
-#ifndef ADC_2_5db
-#define ADC_2_5db 1
-#endif
-
-#ifndef ADC_6db
-#define ADC_6db 2
-#endif
-
-#ifndef ADC_11db
-#define ADC_11db 3
-#endif
-
-inline void analogReadResolution(int bits) {
-    (void)bits;
-}
-
-inline void analogSetAttenuation(int attenuation) {
-    (void)attenuation;
-}
-
 using byte = uint8_t;
 using boolean = bool;
 using word = uint16_t;
@@ -209,12 +185,19 @@ class __FlashStringHelper;
 #ifndef SERIAL_8N1
 #define SERIAL_8N1 0x800001c
 #endif
-#define F(x) x
+#ifndef PSTR
+#define PSTR(x) x
+#endif
+#ifndef FPSTR
+#define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
+#endif
+#ifndef F
+#define F(string_literal) (FPSTR(PSTR(string_literal)))
+#endif
 
 #ifndef SERIAL_8N1
 #define SERIAL_8N1 0x800001c
 #endif
-#define PSTR(x) x
 
 #ifndef SERIAL_8N1
 #define SERIAL_8N1 0x800001c
@@ -234,6 +217,7 @@ public:
 
   String();
   String(const char* s);
+  String(const __FlashStringHelper* s);
   String(const std::string& s);
   String(char c);
   String(int n);
@@ -259,6 +243,7 @@ public:
   void toCharArray(char* buffer, size_t size) const;
   bool concat(const String& s);
   bool concat(const char* s);
+  bool concat(const __FlashStringHelper* s);
   bool concat(char c);
   bool concat(int n);
   bool concat(unsigned int n);
@@ -298,6 +283,7 @@ public:
 
   String& operator+=(const String& other);
   String& operator+=(const char* other);
+  String& operator+=(const __FlashStringHelper* other);
   String& operator+=(char c);
   String& operator+=(int n);
   String& operator+=(unsigned int n);

@@ -1,0 +1,24 @@
+{
+  "Kind": "libraries",
+  "Id": "EEPROM",
+  "Name": "EEPROM simulator stub",
+  "Version": "1.0.1-orisim",
+  "Description": "EEPROM compatibility and persistence layer for ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/EEPROM/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/EEPROM.h",
+      "Type": "header",
+      "Size": 1553,
+      "Sha256": "4c214ad5f874d18417a0a6466366b400d3e48822a17b90305336918ed044cd48"
+    },
+    {
+      "Path": "src/EEPROM.cpp",
+      "Type": "source",
+      "Size": 2410,
+      "Sha256": "ef011b28a80f6af8789b59ae4ac5e4998bedb521a136061ed53f7afea37014c7"
+    }
+  ]
+}

@@ -3,9 +3,27 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(_WIN32)
+  #include <direct.h>
+  #define MKDIR(path) _mkdir(path)
+#else
+  #include <sys/stat.h>
+  #include <sys/types.h>
+  #define MKDIR(path) mkdir(path, 0777)
+#endif
+
 EEPROMClass EEPROM;
 
-static const char* EEPROM_FILE_PATH = "devicefs/eeprom.bin";
+static const char* EEPROM_FILE_PATHS[] = {
+  "devicefs/eeprom.bin",
+  "./devicefs/eeprom.bin",
+  "eeprom.bin",
+  "./eeprom.bin"
+};
+
+static void ensureDirs() {
+  MKDIR("devicefs");
+}
 
 EEPROMClass::EEPROMClass() {
   memset(_data, 0xFF, sizeof(_data));
@@ -28,6 +46,8 @@ bool EEPROMClass::begin(size_t size) {
   _dirty = false;
 
   memset(_data, 0xFF, sizeof(_data));
+
+  ensureDirs();
   loadFromFile();
 
   return true;
@@ -54,19 +74,14 @@ void EEPROMClass::write(int address, uint8_t value) {
     return;
   }
 
-  _data[address] = value;
-  _dirty = true;
-}
-
-void EEPROMClass::update(int address, uint8_t value) {
-  if (!_begun || !validAddress(address)) {
-    return;
-  }
-
   if (_data[address] != value) {
     _data[address] = value;
     _dirty = true;
   }
+}
+
+void EEPROMClass::update(int address, uint8_t value) {
+  write(address, value);
 }
 
 bool EEPROMClass::commit() {
@@ -74,7 +89,10 @@ bool EEPROMClass::commit() {
     return false;
   }
 
+  ensureDirs();
+
   bool ok = saveToFile();
+
   if (ok) {
     _dirty = false;
   }
@@ -91,24 +109,38 @@ bool EEPROMClass::validAddress(int address) const {
 }
 
 bool EEPROMClass::loadFromFile() {
-  FILE* f = fopen(EEPROM_FILE_PATH, "rb");
-  if (!f) {
-    return false;
+  for (size_t i = 0; i < sizeof(EEPROM_FILE_PATHS) / sizeof(EEPROM_FILE_PATHS[0]); i++) {
+    FILE* f = fopen(EEPROM_FILE_PATHS[i], "rb");
+
+    if (!f) {
+      continue;
+    }
+
+    size_t rd = fread(_data, 1, _size, f);
+    fclose(f);
+
+    // Kdyz je soubor kratsi, zbytek zustane 0xFF.
+    (void)rd;
+    return true;
   }
 
-  fread(_data, 1, _size, f);
-  fclose(f);
-  return true;
+  return false;
 }
 
 bool EEPROMClass::saveToFile() {
-  FILE* f = fopen(EEPROM_FILE_PATH, "wb");
-  if (!f) {
-    return false;
+  for (size_t i = 0; i < sizeof(EEPROM_FILE_PATHS) / sizeof(EEPROM_FILE_PATHS[0]); i++) {
+    FILE* f = fopen(EEPROM_FILE_PATHS[i], "wb");
+
+    if (!f) {
+      continue;
+    }
+
+    size_t written = fwrite(_data, 1, _size, f);
+    fflush(f);
+    fclose(f);
+
+    return written == _size;
   }
 
-  size_t written = fwrite(_data, 1, _size, f);
-  fclose(f);
-
-  return written == _size;
+  return false;
 }

@@ -2,8 +2,8 @@
   "Kind": "libraries",
   "Id": "ArduinoJson",
   "Name": "ArduinoJson",
-  "Version": "1.0.0",
-  "Description": "ORIScore ESPsim fake/sim knihovna",
+  "Version": "1.0.1",
+  "Description": "ORIScore ESPsim fake/sim knihovna – doplněna kompatibilita celočíselných typů ArduinoJson",
   "Category": "sim",
   "Manifest": "libraries/ArduinoJson/library.json",
   "File": null,
@@ -11,8 +11,8 @@
     {
       "Path": "include/ArduinoJson.h",
       "Type": "header",
-      "Size": 24656,
-      "Sha256": "c4829a700b565470d6d7d45a73724d54601efdcb7e4d717603f10a32a9925bf2"
+      "Size": 30986,
+      "Sha256": "b5941f4caba7712bb4a69a1ad4704c6a3881642ad1019590f056f383d7d52cb7"
     }
   ]
 }

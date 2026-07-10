@@ -1,25 +1,26 @@
 #pragma once
 
 /*
-  Adafruit_SSD1306.h pro ORIScore ESPsim
-  --------------------------------------
-  Lehká kompatibilní náhrada Adafruit_SSD1306.
+  Adafruit_SSD1306 -> U8glib bridge pro ORIScore ESPsim
+  -----------------------------------------------------
+  Cíl:
+  - Sketch může používat Adafruit_SSD1306 API.
+  - Simulátor ORIS dostane obraz přes U8glib, takže funguje náhled displeje.
+  - display() neposílá framebuffer přes Wire, takže nespamuje Wire.endTransmission addr=0x3C.
+  - drawPixel() zapisuje do framebufferu.
+  - Adafruit_GFX text/kreslení funguje přes drawPixel().
+  - getBuffer() vrací skutečný framebuffer.
 
-  Rozdíl proti původnímu stubu:
-  - display() neposílá nic přes Wire => žádný spam Wire.endTransmission addr=0x3C
-  - clearDisplay() opravdu maže framebuffer
-  - drawPixel() opravdu zapisuje do framebufferu
-  - getBuffer() vrací skutečný framebuffer
-  - podporuje Adafruit_GFX text/kreslení přes drawPixel()
-
-  Tohle je vhodné pro simulátor.
-  Na reálný ESP používej normální knihovnu Adafruit_SSD1306.
+  Používej jen v ORIS ESPsim.
+  Na reálný ESP použij originální Adafruit_SSD1306 knihovnu.
 */
 
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 #include <Wire.h>
+#include <U8glib.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 #ifndef SSD1306_BLACK
@@ -134,7 +135,8 @@ public:
           _buffer(nullptr),
           _bufferSize(0),
           _addr(0x3C),
-          _inverted(false)
+          _inverted(false),
+          _begun(false)
     {
         (void)clkDuring;
         (void)clkAfter;
@@ -149,7 +151,8 @@ public:
           _buffer(nullptr),
           _bufferSize(0),
           _addr(0x3C),
-          _inverted(false)
+          _inverted(false),
+          _begun(false)
     {
     }
 
@@ -172,14 +175,9 @@ public:
         }
 
         if (periphBegin && _wire) {
-            // V simulátoru může Wire.begin() jen oznámit inicializaci.
-            // Display data přes Wire neposíláme.
             _wire->begin();
         }
 
-        _bufferSize = ((_w + 7) / 8) * _h;
-        // Adafruit SSD1306 interně používá velikost W * ((H + 7) / 8).
-        // Pro kompatibilitu getBuffer() držíme stejný layout:
         _bufferSize = (size_t)_w * ((_h + 7) / 8);
 
         if (_buffer) {
@@ -190,16 +188,32 @@ public:
         _buffer = new uint8_t[_bufferSize];
         if (!_buffer) {
             _bufferSize = 0;
+            _begun = false;
             return false;
         }
 
         clearDisplay();
+        _begun = true;
         return true;
     }
 
     void display() {
-        // Záměrně neposílat framebuffer přes Wire.
-        // ORIS sim si případně může vzít data přes getBuffer().
+        if (!_begun || !_buffer) return;
+
+        U8GLIB_SSD1306_128X64& u = getU8g();
+
+        u.firstPage();
+        do {
+            u.setColorIndex(1);
+
+            for (int16_t y = 0; y < _h; y++) {
+                for (int16_t x = 0; x < _w; x++) {
+                    if (bufferPixel(x, y)) {
+                        u.drawPixel(x, y);
+                    }
+                }
+            }
+        } while (u.nextPage());
     }
 
     void clearDisplay() {
@@ -218,10 +232,27 @@ public:
 
     void drawPixel(int16_t x, int16_t y, uint16_t color) override {
         if (!_buffer) return;
+
+        // Jednoduché zachování kompatibility s rotací GFX.
+        switch (getRotation()) {
+            case 1:
+                swapInt16(x, y);
+                x = WIDTH - x - 1;
+                break;
+
+            case 2:
+                x = WIDTH - x - 1;
+                y = HEIGHT - y - 1;
+                break;
+
+            case 3:
+                swapInt16(x, y);
+                y = HEIGHT - y - 1;
+                break;
+        }
+
         if (x < 0 || y < 0 || x >= _w || y >= _h) return;
 
-        // Adafruit buffer layout:
-        // index = x + (y / 8) * width
         size_t index = (size_t)x + (size_t)(y / 8) * (size_t)_w;
         if (index >= _bufferSize) return;
 
@@ -295,14 +326,6 @@ public:
         return dummy;
     }
 
-    int16_t width(void) const {
-        return _w;
-    }
-
-    int16_t height(void) const {
-        return _h;
-    }
-
 private:
     int16_t _w;
     int16_t _h;
@@ -312,4 +335,29 @@ private:
     size_t _bufferSize;
     uint8_t _addr;
     bool _inverted;
+    bool _begun;
+
+    static void swapInt16(int16_t& a, int16_t& b) {
+        int16_t t = a;
+        a = b;
+        b = t;
+    }
+
+    static U8GLIB_SSD1306_128X64& getU8g() {
+        static U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);
+        return u8g;
+    }
+
+    bool bufferPixel(int16_t x, int16_t y) const {
+        if (!_buffer) return false;
+        if (x < 0 || y < 0 || x >= _w || y >= _h) return false;
+
+        size_t index = (size_t)x + (size_t)(y / 8) * (size_t)_w;
+        if (index >= _bufferSize) return false;
+
+        uint8_t mask = (uint8_t)(1 << (y & 7));
+        bool on = (_buffer[index] & mask) != 0;
+
+        return _inverted ? !on : on;
+    }
 };

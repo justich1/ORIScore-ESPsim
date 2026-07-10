@@ -1,18 +1,24 @@
 {
   "Kind": "libraries",
   "Id": "arduino",
-  "Name": "Arduino",
-  "Version": "1.0.0",
-  "Description": "Arduino",
-  "Category": "libraries",
+  "Name": "Arduino compatibility core",
+  "Version": "1.0.1-orisim",
+  "Description": "Arduino desktop compatibility core for ORIScore ESPsim, including F()/PROGMEM support.",
+  "Category": "sim",
   "Manifest": "libraries/arduino/library.json",
   "File": null,
   "Files": [
     {
       "Path": "include/Arduino.h",
       "Type": "header",
-      "Size": 9649,
-      "Sha256": "c0b2032f14082131eb34308e583daae07695d930cd1869870c7c23ab2ada1db8"
+      "Size": 20504,
+      "Sha256": "14c2a50c62dc77abe168abe56edcf5089c2065f19e9ad6b2ba08859240b67321"
+    },
+    {
+      "Path": "include/Client.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
     },
     {
       "Path": "include/FS.h",
@@ -21,10 +27,46 @@
       "Sha256": "8de9e1bcea15ae1274505f4095190b4bbead67eb09c306ac2a82bc0682a5a909"
     },
     {
+      "Path": "include/HardwareSerial.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/IPAddress.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/Print.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/Printable.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/Server.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
       "Path": "include/SoftwareSerial.h",
       "Type": "header",
       "Size": 211,
       "Sha256": "42273973653b69991360846a9a8f83e3d40c7d9da2c1ae8cd7e7708ed1444a7f"
+    },
+    {
+      "Path": "include/Stream.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
     },
     {
       "Path": "include/Ticker.h",
@@ -33,10 +75,40 @@
       "Sha256": "22b60d5ffe6ce21080811b0d7a211fed08af79342965e53ffe1960190de6c912"
     },
     {
+      "Path": "include/Udp.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/WProgram.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/WString.h",
+      "Type": "header",
+      "Size": 34,
+      "Sha256": "03dc557aeaebc60eaa27f58195ac98755593cee7c02dde89f7940fb6ead4e667"
+    },
+    {
+      "Path": "include/avr/pgmspace.h",
+      "Type": "header",
+      "Size": 38,
+      "Sha256": "fef3a139774c6be7c783f8480850e3e5fd0bf3a46d234925a532cf2e63309ac9"
+    },
+    {
+      "Path": "include/pgmspace.h",
+      "Type": "header",
+      "Size": 2342,
+      "Sha256": "3b7e8facf2ef3e8124a845e92d5054f0a512265ecdee1f47669e1c2c30d65b8c"
+    },
+    {
       "Path": "src/Arduino.cpp",
       "Type": "source",
-      "Size": 20987,
-      "Sha256": "51bf510792b4aeea12d21cce473a21c4b3330302cab0afdeee23fca3d2531480"
+      "Size": 42880,
+      "Sha256": "623da3e387037a32e119abc3c3077687793b83eb55e0cf0605b31853f10f6069"
     }
   ]
 }

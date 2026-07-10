@@ -1,0 +1,24 @@
+{
+  "Kind": "libraries",
+  "Id": "Adafruit_SSD1306",
+  "Name": "Adafruit SSD1306 simulator stub",
+  "Version": "1.0.1-orisim",
+  "Description": "SSD1306 OLED compatibility layer for ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/Adafruit_SSD1306/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/Adafruit_SSD1306.h",
+      "Type": "header",
+      "Size": 7926,
+      "Sha256": "7f0ffeb1e8b48990e5a36247b8a9a3bd9e1fd6274af54873081a7682a3863b8d"
+    },
+    {
+      "Path": "src/Adafruit_SSD1306.cpp",
+      "Type": "source",
+      "Size": 110,
+      "Sha256": "3fcd975785ba42abf85e22bd78cfec98aeebe6fa1990b7c963be3dde9db75965"
+    }
+  ]
+}

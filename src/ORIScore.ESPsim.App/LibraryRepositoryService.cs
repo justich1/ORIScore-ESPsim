@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace ORIScore.ESPsim.App;
 
@@ -9,6 +10,24 @@ public sealed record RepoPackage(string Kind, string Id, string Name, string Ver
 public sealed record LibraryFileEntry(string Path, string Type, long Size, string? Sha256);
 public sealed record LibraryPackage(string Id, string Name, string Version, string? Description, string? Category, List<LibraryFileEntry> Files);
 public sealed record LibraryInstallResult(bool Success, string Message, string TargetDirectory);
+
+public enum RepositoryItemState
+{
+    NotInstalled,
+    UpToDate,
+    UpdateAvailable,
+    Installed,
+    InstalledNewer,
+    Damaged
+}
+
+public sealed record RepositoryItemInstallationInfo(
+    RepositoryItemState State,
+    string? InstalledVersion,
+    string StatusText)
+{
+    public bool IsInstalled => State != RepositoryItemState.NotInstalled;
+}
 
 public sealed class LibraryRepositoryService
 {
@@ -23,6 +42,7 @@ public sealed class LibraryRepositoryService
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
 
@@ -95,60 +115,126 @@ public sealed class LibraryRepositoryService
         )).ToList();
     }
 
-    public async Task<LibraryInstallResult> InstallRepositoryItemsAsync(IEnumerable<RepoPackage> items, string? repositoryUrl = null, CancellationToken cancellationToken = default)
+    public RepositoryItemInstallationInfo GetInstallationInfo(RepoPackage item)
+    {
+        try
+        {
+            return item.Kind switch
+            {
+                "libraries" => GetLibraryInstallationInfo(item),
+                "boards" or "devices" => GetJsonItemInstallationInfo(item),
+                _ => new RepositoryItemInstallationInfo(RepositoryItemState.NotInstalled, null, "nenainstalováno")
+            };
+        }
+        catch (Exception ex)
+        {
+            return new RepositoryItemInstallationInfo(RepositoryItemState.Damaged, null, "stav nelze ověřit: " + ex.Message);
+        }
+    }
+
+    public Task<LibraryInstallResult> InstallRepositoryItemsAsync(
+        IEnumerable<RepoPackage> items,
+        string? repositoryUrl = null,
+        CancellationToken cancellationToken = default)
+        => InstallOrUpdateRepositoryItemsAsync(items, repositoryUrl, cancellationToken);
+
+    public Task<LibraryInstallResult> UpdateRepositoryItemsAsync(
+        IEnumerable<RepoPackage> items,
+        string? repositoryUrl = null,
+        CancellationToken cancellationToken = default)
+        => InstallOrUpdateRepositoryItemsAsync(items, repositoryUrl, cancellationToken);
+
+    public Task<LibraryInstallResult> UninstallRepositoryItemsAsync(
+        IEnumerable<RepoPackage> items,
+        CancellationToken cancellationToken = default)
+    {
+        AppPaths.EnsurePortableLayout();
+
+        int removedItems = 0;
+        int removedFiles = 0;
+        var errors = new List<string>();
+
+        foreach (var item in items)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                if (item.Kind == "libraries")
+                {
+                    string targetDir = GetInstalledLibraryDirectory(item.Id);
+                    if (!Directory.Exists(targetDir))
+                        continue;
+
+                    removedFiles += Directory.GetFiles(targetDir, "*", SearchOption.AllDirectories).Length;
+                    Directory.Delete(targetDir, recursive: true);
+                    removedItems++;
+                    continue;
+                }
+
+                if (item.Kind is "boards" or "devices")
+                {
+                    string? targetFile = GetInstalledJsonItemPath(item);
+                    if (string.IsNullOrWhiteSpace(targetFile) || !File.Exists(targetFile))
+                        continue;
+
+                    File.Delete(targetFile);
+                    removedFiles++;
+                    removedItems++;
+                }
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"{item.Kind}/{item.Id}: {ex.Message}");
+            }
+        }
+
+        string message = errors.Count == 0
+            ? $"Odinstalováno {removedItems} položek ({removedFiles} souborů)."
+            : $"Odinstalováno {removedItems} položek ({removedFiles} souborů), chyby: {string.Join(" | ", errors)}";
+
+        return Task.FromResult(new LibraryInstallResult(errors.Count == 0, message, AppPaths.BaseDir));
+    }
+
+    public async Task<LibraryInstallResult> InstallLibrariesAsync(IEnumerable<LibraryPackage> libraries, string? repositoryUrl = null, CancellationToken cancellationToken = default)
+    {
+        var items = libraries.Select(x => new RepoPackage("libraries", x.Id, x.Name, x.Version, x.Description, x.Category, $"libraries/{x.Id}/library.json", null,
+            x.Files.Select(f => new RepoFileEntry(f.Path, f.Type, f.Size, f.Sha256)).ToList()));
+        return await InstallRepositoryItemsAsync(items, repositoryUrl, cancellationToken);
+    }
+
+    private async Task<LibraryInstallResult> InstallOrUpdateRepositoryItemsAsync(
+        IEnumerable<RepoPackage> items,
+        string? repositoryUrl,
+        CancellationToken cancellationToken)
     {
         AppPaths.EnsurePortableLayout();
         string baseUrl = NormalizeBaseUrl(repositoryUrl ?? LoadConfiguredRepositoryUrl());
         using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
 
+        int installedItems = 0;
         int files = 0;
         var errors = new List<string>();
 
         foreach (var item in items)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 if (item.Kind is "boards" or "devices")
                 {
-                    if (string.IsNullOrWhiteSpace(item.File)) continue;
-                    string sourceUrl = baseUrl + item.Kind + "/" + NormalizeRelativeFile(item.File).Replace('\\', '/');
-                    string targetDir = item.Kind == "boards" ? AppPaths.BoardsDir : AppPaths.DevicesDir;
-                    Directory.CreateDirectory(targetDir);
-                    string outFile = Path.Combine(targetDir, Path.GetFileName(item.File));
-                    byte[] data = await http.GetByteArrayAsync(sourceUrl, cancellationToken);
-                    await File.WriteAllBytesAsync(outFile, data, cancellationToken);
-                    files++;
+                    int downloaded = await InstallJsonItemAsync(http, baseUrl, item, cancellationToken);
+                    files += downloaded;
+                    installedItems++;
                     continue;
                 }
 
-                string safeId = SafePathPart(item.Id);
-                string rootDir = Path.Combine(AppPaths.LibraryInstalledDir, safeId);
-                Directory.CreateDirectory(rootDir);
-
-                string manifestName = "library.json";
-                await File.WriteAllTextAsync(Path.Combine(rootDir, manifestName), JsonSerializer.Serialize(item, JsonOptions), cancellationToken);
-
-                foreach (var f in item.Files)
+                if (item.Kind == "libraries")
                 {
-                    string rel = NormalizeRelativeFile(f.Path);
-                    if (string.IsNullOrWhiteSpace(rel)) continue;
-
-                    string sourceUrl = baseUrl + item.Kind + "/" + safeId + "/" + rel.Replace('\\', '/');
-                    string outFile = Path.Combine(rootDir, rel.Replace('/', Path.DirectorySeparatorChar));
-                    Directory.CreateDirectory(Path.GetDirectoryName(outFile)!);
-
-                    byte[] data = await http.GetByteArrayAsync(sourceUrl, cancellationToken);
-                    if (!string.IsNullOrWhiteSpace(f.Sha256))
-                    {
-                        string hash = Convert.ToHexString(SHA256.HashData(data)).ToLowerInvariant();
-                        if (!hash.Equals(f.Sha256, StringComparison.OrdinalIgnoreCase))
-                        {
-                            errors.Add($"{item.Kind}/{item.Id}/{rel}: SHA256 nesedí");
-                            continue;
-                        }
-                    }
-                    await File.WriteAllBytesAsync(outFile, data, cancellationToken);
-                    files++;
+                    int downloaded = await InstallLibraryPackageAsync(http, baseUrl, item, cancellationToken);
+                    files += downloaded;
+                    installedItems++;
                 }
             }
             catch (Exception ex)
@@ -158,17 +244,210 @@ public sealed class LibraryRepositoryService
         }
 
         string msg = errors.Count == 0
-            ? $"Nainstalováno {files} souborů."
-            : $"Nainstalováno {files} souborů, chyby: {string.Join(" | ", errors)}";
+            ? $"Nainstalováno nebo aktualizováno {installedItems} položek ({files} souborů)."
+            : $"Nainstalováno nebo aktualizováno {installedItems} položek ({files} souborů), chyby: {string.Join(" | ", errors)}";
 
         return new LibraryInstallResult(errors.Count == 0, msg, AppPaths.BaseDir);
     }
 
-    public async Task<LibraryInstallResult> InstallLibrariesAsync(IEnumerable<LibraryPackage> libraries, string? repositoryUrl = null, CancellationToken cancellationToken = default)
+    private static async Task<int> InstallJsonItemAsync(
+        HttpClient http,
+        string baseUrl,
+        RepoPackage item,
+        CancellationToken cancellationToken)
     {
-        var items = libraries.Select(x => new RepoPackage("libraries", x.Id, x.Name, x.Version, x.Description, x.Category, $"libraries/{x.Id}/library.json", null,
-            x.Files.Select(f => new RepoFileEntry(f.Path, f.Type, f.Size, f.Sha256)).ToList()));
-        return await InstallRepositoryItemsAsync(items, repositoryUrl, cancellationToken);
+        if (string.IsNullOrWhiteSpace(item.File))
+            throw new InvalidDataException("V manifestu chybí název souboru.");
+
+        string rel = NormalizeRelativeFile(item.File);
+        if (string.IsNullOrWhiteSpace(rel))
+            throw new InvalidDataException("Neplatná cesta souboru.");
+
+        string sourceUrl = baseUrl + item.Kind + "/" + rel.Replace('\\', '/');
+        string targetDir = item.Kind == "boards" ? AppPaths.BoardsDir : AppPaths.DevicesDir;
+        Directory.CreateDirectory(targetDir);
+
+        string outFile = Path.Combine(targetDir, Path.GetFileName(rel));
+        byte[] data = await http.GetByteArrayAsync(sourceUrl, cancellationToken);
+
+        RepoFileEntry? repoFile = item.Files.FirstOrDefault();
+        VerifyHash(data, repoFile?.Sha256, $"{item.Kind}/{item.Id}/{rel}");
+
+        string tempFile = outFile + ".download-" + Guid.NewGuid().ToString("N");
+        try
+        {
+            await File.WriteAllBytesAsync(tempFile, data, cancellationToken);
+            File.Move(tempFile, outFile, overwrite: true);
+        }
+        finally
+        {
+            TryDeleteFile(tempFile);
+        }
+
+        return 1;
+    }
+
+    private static async Task<int> InstallLibraryPackageAsync(
+        HttpClient http,
+        string baseUrl,
+        RepoPackage item,
+        CancellationToken cancellationToken)
+    {
+        if (item.Files.Count == 0)
+            throw new InvalidDataException("Manifest knihovny neobsahuje žádné soubory.");
+
+        string safeId = SafePathPart(item.Id);
+        string stagingRoot = Path.Combine(AppPaths.LibraryRepoDir, "staging");
+        Directory.CreateDirectory(stagingRoot);
+
+        string stageDir = Path.Combine(stagingRoot, safeId + "-" + Guid.NewGuid().ToString("N"));
+        string targetDir = GetInstalledLibraryDirectory(item.Id);
+        string remoteDir = GetRemotePackageDirectory(item);
+        Directory.CreateDirectory(stageDir);
+
+        int downloaded = 0;
+        try
+        {
+            foreach (var f in item.Files)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                string rel = NormalizeRelativeFile(f.Path);
+                if (string.IsNullOrWhiteSpace(rel))
+                    throw new InvalidDataException($"Neplatná cesta v manifestu: {f.Path}");
+
+                string sourceUrl = baseUrl + remoteDir + "/" + rel.Replace('\\', '/');
+                string outFile = Path.Combine(stageDir, rel.Replace('/', Path.DirectorySeparatorChar));
+                Directory.CreateDirectory(Path.GetDirectoryName(outFile)!);
+
+                byte[] data = await http.GetByteArrayAsync(sourceUrl, cancellationToken);
+                VerifyHash(data, f.Sha256, $"{item.Kind}/{item.Id}/{rel}");
+                await File.WriteAllBytesAsync(outFile, data, cancellationToken);
+                downloaded++;
+            }
+
+            var installedManifest = new
+            {
+                id = item.Id,
+                name = item.Name,
+                version = item.Version,
+                description = item.Description,
+                category = item.Category,
+                installedAt = DateTimeOffset.Now,
+                files = item.Files.Select(f => new
+                {
+                    path = f.Path,
+                    type = f.Type,
+                    size = f.Size,
+                    sha256 = f.Sha256
+                }).ToList()
+            };
+
+            await File.WriteAllTextAsync(
+                Path.Combine(stageDir, "library.json"),
+                JsonSerializer.Serialize(installedManifest, JsonOptions),
+                cancellationToken);
+
+            ReplaceDirectory(stageDir, targetDir);
+            return downloaded;
+        }
+        finally
+        {
+            TryDeleteDirectory(stageDir);
+        }
+    }
+
+    private RepositoryItemInstallationInfo GetLibraryInstallationInfo(RepoPackage item)
+    {
+        string rootDir = GetInstalledLibraryDirectory(item.Id);
+        if (!Directory.Exists(rootDir))
+            return new RepositoryItemInstallationInfo(RepositoryItemState.NotInstalled, null, "nenainstalováno");
+
+        string manifestPath = Path.Combine(rootDir, "library.json");
+        string? installedVersion = ReadJsonStringIgnoreCase(manifestPath, "version");
+
+        bool missingFile = false;
+        bool hashMismatch = false;
+        bool hasHash = false;
+
+        foreach (var f in item.Files)
+        {
+            string rel = NormalizeRelativeFile(f.Path);
+            if (string.IsNullOrWhiteSpace(rel))
+            {
+                missingFile = true;
+                continue;
+            }
+
+            string localFile = Path.Combine(rootDir, rel.Replace('/', Path.DirectorySeparatorChar));
+            if (!File.Exists(localFile))
+            {
+                missingFile = true;
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(f.Sha256))
+            {
+                hasHash = true;
+                string localHash = ComputeFileSha256(localFile);
+                if (!localHash.Equals(f.Sha256, StringComparison.OrdinalIgnoreCase))
+                    hashMismatch = true;
+            }
+        }
+
+        if (missingFile)
+            return new RepositoryItemInstallationInfo(RepositoryItemState.Damaged, installedVersion, "neúplná instalace – lze opravit aktualizací");
+
+        if (hashMismatch)
+            return new RepositoryItemInstallationInfo(RepositoryItemState.UpdateAvailable, installedVersion, "lokální soubory se liší – lze aktualizovat");
+
+        if (!string.IsNullOrWhiteSpace(installedVersion) && !string.IsNullOrWhiteSpace(item.Version))
+        {
+            int compare = CompareVersions(installedVersion, item.Version);
+            if (compare < 0)
+                return new RepositoryItemInstallationInfo(RepositoryItemState.UpdateAvailable, installedVersion, $"aktualizace {installedVersion} → {item.Version}");
+            if (compare > 0)
+                return new RepositoryItemInstallationInfo(RepositoryItemState.InstalledNewer, installedVersion, $"lokálně novější verze {installedVersion}");
+
+            return new RepositoryItemInstallationInfo(RepositoryItemState.UpToDate, installedVersion, "aktuální");
+        }
+
+        if (hasHash && item.Files.Count > 0)
+            return new RepositoryItemInstallationInfo(RepositoryItemState.UpToDate, installedVersion, "aktuální podle kontrolních součtů");
+
+        return new RepositoryItemInstallationInfo(RepositoryItemState.Installed, installedVersion, "nainstalováno – verzi nelze porovnat");
+    }
+
+    private RepositoryItemInstallationInfo GetJsonItemInstallationInfo(RepoPackage item)
+    {
+        string? localFile = GetInstalledJsonItemPath(item);
+        if (string.IsNullOrWhiteSpace(localFile) || !File.Exists(localFile))
+            return new RepositoryItemInstallationInfo(RepositoryItemState.NotInstalled, null, "nenainstalováno");
+
+        string? installedVersion = ReadJsonStringIgnoreCase(localFile, "version");
+        RepoFileEntry? repoFile = item.Files.FirstOrDefault();
+
+        if (!string.IsNullOrWhiteSpace(repoFile?.Sha256))
+        {
+            string localHash = ComputeFileSha256(localFile);
+            if (localHash.Equals(repoFile.Sha256, StringComparison.OrdinalIgnoreCase))
+                return new RepositoryItemInstallationInfo(RepositoryItemState.UpToDate, installedVersion, "aktuální");
+
+            return new RepositoryItemInstallationInfo(RepositoryItemState.UpdateAvailable, installedVersion, "soubor se liší od repozitáře");
+        }
+
+        if (!string.IsNullOrWhiteSpace(installedVersion) && !string.IsNullOrWhiteSpace(item.Version))
+        {
+            int compare = CompareVersions(installedVersion, item.Version);
+            if (compare < 0)
+                return new RepositoryItemInstallationInfo(RepositoryItemState.UpdateAvailable, installedVersion, $"aktualizace {installedVersion} → {item.Version}");
+            if (compare > 0)
+                return new RepositoryItemInstallationInfo(RepositoryItemState.InstalledNewer, installedVersion, $"lokálně novější verze {installedVersion}");
+
+            return new RepositoryItemInstallationInfo(RepositoryItemState.UpToDate, installedVersion, "aktuální");
+        }
+
+        return new RepositoryItemInstallationInfo(RepositoryItemState.Installed, installedVersion, "nainstalováno – verzi nelze porovnat");
     }
 
     private static async Task<List<RepoPackage>> GetPackageItemsAsync(HttpClient http, string baseUrl, string kind, string defaultManifestName, CancellationToken ct)
@@ -309,7 +588,7 @@ public sealed class LibraryRepositoryService
     private static string NormalizeRelativeFile(string path)
     {
         path = path.Replace('\\', '/').Trim('/');
-        if (path.Contains("..")) return "";
+        if (path.Contains("..", StringComparison.Ordinal)) return "";
         return path;
     }
 
@@ -317,5 +596,141 @@ public sealed class LibraryRepositoryService
     {
         var chars = value.Where(c => char.IsLetterOrDigit(c) || c is '_' or '-' or '.').ToArray();
         return chars.Length == 0 ? "item" : new string(chars);
+    }
+
+    private static string GetInstalledLibraryDirectory(string id)
+        => Path.Combine(AppPaths.LibraryInstalledDir, SafePathPart(id));
+
+    private static string? GetInstalledJsonItemPath(RepoPackage item)
+    {
+        if (string.IsNullOrWhiteSpace(item.File)) return null;
+        string fileName = Path.GetFileName(item.File);
+        if (string.IsNullOrWhiteSpace(fileName)) return null;
+
+        string targetDir = item.Kind == "boards" ? AppPaths.BoardsDir : AppPaths.DevicesDir;
+        return Path.Combine(targetDir, fileName);
+    }
+
+    private static string GetRemotePackageDirectory(RepoPackage item)
+    {
+        string manifest = NormalizeRelativeFile(item.Manifest ?? "");
+        int slash = manifest.LastIndexOf('/');
+        if (slash > 0)
+            return manifest[..slash];
+
+        return item.Kind + "/" + SafePathPart(item.Id);
+    }
+
+    private static void VerifyHash(byte[] data, string? expectedSha256, string label)
+    {
+        if (string.IsNullOrWhiteSpace(expectedSha256)) return;
+
+        string hash = Convert.ToHexString(SHA256.HashData(data)).ToLowerInvariant();
+        if (!hash.Equals(expectedSha256, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException($"{label}: SHA256 nesedí");
+    }
+
+    private static string ComputeFileSha256(string file)
+    {
+        using var stream = File.OpenRead(file);
+        return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
+    }
+
+    private static string? ReadJsonStringIgnoreCase(string file, string propertyName)
+    {
+        if (!File.Exists(file)) return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(File.ReadAllText(file));
+            foreach (var property in doc.RootElement.EnumerateObject())
+            {
+                if (property.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase) &&
+                    property.Value.ValueKind == JsonValueKind.String)
+                {
+                    return property.Value.GetString();
+                }
+            }
+        }
+        catch { }
+
+        return null;
+    }
+
+    private static int CompareVersions(string installed, string repository)
+    {
+        if (installed.Equals(repository, StringComparison.OrdinalIgnoreCase))
+            return 0;
+
+        long[] left = Regex.Matches(installed, @"\d+")
+            .Cast<Match>()
+            .Select(m => long.TryParse(m.Value, out long value) ? value : 0)
+            .ToArray();
+        long[] right = Regex.Matches(repository, @"\d+")
+            .Cast<Match>()
+            .Select(m => long.TryParse(m.Value, out long value) ? value : 0)
+            .ToArray();
+
+        int max = Math.Max(left.Length, right.Length);
+        for (int i = 0; i < max; i++)
+        {
+            long a = i < left.Length ? left[i] : 0;
+            long b = i < right.Length ? right[i] : 0;
+            int compare = a.CompareTo(b);
+            if (compare != 0) return compare;
+        }
+
+        return 0;
+    }
+
+    private static void ReplaceDirectory(string stagedDirectory, string targetDirectory)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(targetDirectory)!);
+        string backupRoot = Path.Combine(AppPaths.LibraryRepoDir, "staging");
+        Directory.CreateDirectory(backupRoot);
+        string backupDirectory = Path.Combine(
+            backupRoot,
+            Path.GetFileName(targetDirectory) + "-backup-" + Guid.NewGuid().ToString("N"));
+        bool backupCreated = false;
+
+        if (Directory.Exists(targetDirectory))
+        {
+            Directory.Move(targetDirectory, backupDirectory);
+            backupCreated = true;
+        }
+
+        try
+        {
+            Directory.Move(stagedDirectory, targetDirectory);
+        }
+        catch
+        {
+            if (!Directory.Exists(targetDirectory) && backupCreated && Directory.Exists(backupDirectory))
+                Directory.Move(backupDirectory, targetDirectory);
+            throw;
+        }
+
+        if (backupCreated)
+            TryDeleteDirectory(backupDirectory);
+    }
+
+    private static void TryDeleteDirectory(string directory)
+    {
+        try
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
+        }
+        catch { }
+    }
+
+    private static void TryDeleteFile(string file)
+    {
+        try
+        {
+            if (File.Exists(file))
+                File.Delete(file);
+        }
+        catch { }
     }
 }

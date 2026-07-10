@@ -1,0 +1,18 @@
+{
+  "Kind": "libraries",
+  "Id": "RTClib",
+  "Name": "RTClib simulator stub",
+  "Version": "1.0.1-orisim",
+  "Description": "RTC_DS3231, DateTime and TimeSpan compatibility for ORIScore ESPsim.",
+  "Category": "sim",
+  "Manifest": "libraries/RTClib/library.json",
+  "File": null,
+  "Files": [
+    {
+      "Path": "include/RTClib.h",
+      "Type": "header",
+      "Size": 7879,
+      "Sha256": "f45938ff729bb13ab0fd981d2b8090b8e6c9f76005911d2f0caf9b4c6f3d6ddc"
+    }
+  ]
+}

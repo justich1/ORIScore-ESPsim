@@ -1,135 +1,56 @@
 #pragma once
 
-#include <Arduino.h>
-#include <stdint.h>
-#include <stddef.h>
+#include "Arduino.h"
 
-#ifndef BUFFER_LENGTH
-#define BUFFER_LENGTH 32
-#endif
-
-#ifndef I2C_BUFFER_LENGTH
-#define I2C_BUFFER_LENGTH 32
-#endif
+#include <cstddef>
+#include <cstdint>
+#include <vector>
 
 class TwoWire {
 public:
-    TwoWire() {}
-    explicit TwoWire(uint8_t bus_num) {
-        (void)bus_num;
-    }
+  TwoWire();
+  explicit TwoWire(int bus);
 
-    void begin() {}
+  void begin();
+  void begin(int sda, int scl);
+  void setClock(uint32_t clock);
 
-    bool begin(int sda, int scl) {
-        (void)sda;
-        (void)scl;
-        return true;
-    }
+  void beginTransmission(uint8_t address);
+  size_t write(uint8_t b);
+  size_t write(const uint8_t* data, size_t len);
+  uint8_t endTransmission(bool stopBit = true);
 
-    bool begin(int sda, int scl, uint32_t frequency) {
-        (void)sda;
-        (void)scl;
-        (void)frequency;
-        return true;
-    }
+  uint8_t requestFrom(uint8_t address, uint8_t quantity);
+  size_t requestFrom(int address, int quantity);
 
-    void end() {}
+  int available();
+  int read();
 
-    void setClock(uint32_t frequency) {
-        (void)frequency;
-    }
+private:
+  void ensureRtcInitialized();
+  void updateRtcRegisters();
+  void applyRtcWrite(uint8_t firstRegister, const uint8_t* data, size_t length);
+  void setRtcFromRegisters();
+  void loadRtcState();
+  void saveRtcState(bool force);
 
-    void setTimeOut(uint16_t timeOutMillis) {
-        (void)timeOutMillis;
-    }
+  int _bus = 0;
+  int _sda = -1;
+  int _scl = -1;
+  uint32_t _clock = 100000;
+  uint8_t _address = 0;
+  uint8_t _registerPointer = 0;
+  std::vector<uint8_t> _tx;
+  std::vector<uint8_t> _rx;
 
-    void beginTransmission(uint8_t address) {
-        (void)address;
-    }
-
-    void beginTransmission(int address) {
-        beginTransmission((uint8_t)address);
-    }
-
-    uint8_t endTransmission(void) {
-        return 0;
-    }
-
-    uint8_t endTransmission(bool stopBit) {
-        (void)stopBit;
-        return 0;
-    }
-
-    size_t write(uint8_t data) {
-        (void)data;
-        return 1;
-    }
-
-    size_t write(int data) {
-        return write((uint8_t)data);
-    }
-
-    size_t write(const uint8_t* data, size_t quantity) {
-        (void)data;
-        return quantity;
-    }
-
-    size_t write(const char* data) {
-        if (!data) return 0;
-
-        size_t len = 0;
-        while (data[len] != '\0') len++;
-        return len;
-    }
-
-    int requestFrom(uint8_t address, uint8_t quantity) {
-        (void)address;
-        return quantity;
-    }
-
-    int requestFrom(uint8_t address, uint8_t quantity, uint8_t sendStop) {
-        (void)address;
-        (void)sendStop;
-        return quantity;
-    }
-
-    int requestFrom(uint8_t address, size_t quantity, bool sendStop) {
-        (void)address;
-        (void)sendStop;
-        return (int)quantity;
-    }
-
-    int requestFrom(int address, int quantity) {
-        return requestFrom((uint8_t)address, (uint8_t)quantity);
-    }
-
-    int requestFrom(int address, int quantity, int sendStop) {
-        return requestFrom((uint8_t)address, (uint8_t)quantity, (uint8_t)sendStop);
-    }
-
-    int available(void) {
-        return 0;
-    }
-
-    int read(void) {
-        return -1;
-    }
-
-    int peek(void) {
-        return -1;
-    }
-
-    void flush(void) {}
-
-    void onReceive(void (*function)(int)) {
-        (void)function;
-    }
-
-    void onRequest(void (*function)(void)) {
-        (void)function;
-    }
+  // PCF8563/BM8563 simulator at I2C address 0x51.
+  bool _rtcInitialized = false;
+  bool _rtcRunning = true;
+  bool _rtcVoltageLow = true;
+  uint64_t _rtcBaseSeconds = 0;
+  unsigned long _rtcBaseMillis = 0;
+  long long _rtcLastPersistHost = 0;
+  uint8_t _rtcRegisters[256]{};
 };
 
 extern TwoWire Wire;
-extern TwoWire Wire1;

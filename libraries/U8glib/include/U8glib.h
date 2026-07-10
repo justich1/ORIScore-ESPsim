@@ -72,6 +72,8 @@ protected:
   std::string _controller;
   std::string _iface;
   std::vector<uint8_t> _buffer;
+  std::vector<uint8_t> _lastEmittedBuffer;
+  bool _hasLastEmittedFrame = false;
   uint8_t _color = 1;
   int _printX = 0;
   int _printY = 8;

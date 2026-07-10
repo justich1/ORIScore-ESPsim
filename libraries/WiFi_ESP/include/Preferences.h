@@ -79,6 +79,55 @@ public:
     return it == _store.end() ? defaultValue : (uint32_t)it->second.toInt();
   }
 
+
+  size_t putChar(const char* key, int8_t value) {
+    return putInt(key, (int32_t)value);
+  }
+
+  int8_t getChar(const char* key, int8_t defaultValue = 0) const {
+    return (int8_t)getInt(key, (int32_t)defaultValue);
+  }
+
+  size_t putUChar(const char* key, uint8_t value) {
+    return putUInt(key, (uint32_t)value);
+  }
+
+  uint8_t getUChar(const char* key, uint8_t defaultValue = 0) const {
+    return (uint8_t)getUInt(key, (uint32_t)defaultValue);
+  }
+
+  size_t putShort(const char* key, int16_t value) {
+    return putInt(key, (int32_t)value);
+  }
+
+  int16_t getShort(const char* key, int16_t defaultValue = 0) const {
+    return (int16_t)getInt(key, (int32_t)defaultValue);
+  }
+
+  size_t putUShort(const char* key, uint16_t value) {
+    return putUInt(key, (uint32_t)value);
+  }
+
+  uint16_t getUShort(const char* key, uint16_t defaultValue = 0) const {
+    return (uint16_t)getUInt(key, (uint32_t)defaultValue);
+  }
+
+  size_t putLong(const char* key, int32_t value) {
+    return putInt(key, value);
+  }
+
+  int32_t getLong(const char* key, int32_t defaultValue = 0) const {
+    return getInt(key, defaultValue);
+  }
+
+  size_t putULong(const char* key, uint32_t value) {
+    return putUInt(key, value);
+  }
+
+  uint32_t getULong(const char* key, uint32_t defaultValue = 0) const {
+    return getUInt(key, defaultValue);
+  }
+
   size_t putFloat(const char* key, float value) {
     if (_readOnly) return 0;
     _store[scopedKey(key)] = String(value, 6);
@@ -113,17 +162,6 @@ public:
     auto it = _bytes.find(scopedKey(key));
     return it == _bytes.end() ? 0 : it->second.size();
   }
-
-uint8_t getUChar(const char* key, uint8_t defaultValue = 0) {
-    (void)key;
-    return defaultValue;
-}
-
-size_t putUChar(const char* key, uint8_t value) {
-    (void)key;
-    (void)value;
-    return 1;
-}
 
 private:
   String _name;

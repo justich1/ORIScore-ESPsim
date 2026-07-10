@@ -175,6 +175,17 @@ void U8GLIB::emitConfig() {
 
 void U8GLIB::emitFrame() {
   if (_sleep) return;
+
+  // Firmware často volá display()/nextPage() několikrát za sekundu,
+  // i když se obraz vůbec nezměnil. Posílání stejného framebufferu
+  // způsobovalo v náhledu WinForms zbytečné překreslení a blikání.
+  if (_hasLastEmittedFrame && _lastEmittedBuffer == _buffer) {
+    return;
+  }
+
+  _lastEmittedBuffer = _buffer;
+  _hasLastEmittedFrame = true;
+
   std::ostringstream oss;
   oss << "DISPLAYFRAME W=" << _width << " H=" << _height << " HEX=";
   oss << std::hex << std::setfill('0');

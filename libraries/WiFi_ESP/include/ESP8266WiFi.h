@@ -14,10 +14,6 @@
 #define WL_CONNECTION_LOST 5
 #define WL_DISCONNECTED 6
 
-#ifndef WIFI_POWER_7dBm
-#define WIFI_POWER_7dBm 28
-#endif
-
 // IPAddress is provided by arduino/include/Arduino.h
 
 class FakeWiFiClass {
@@ -27,15 +23,6 @@ public:
   int getMode() const {
     return currentMode;
   }
-
-int scanNetworks() {
-    return 1;
-}
-
-String SSID(int index) {
-    (void)index;
-    return String("ORISimWiFi");
-}
 
   bool softAP(const char* ssid, const char* pass = nullptr);
 
@@ -115,10 +102,6 @@ String SSID(int index) {
     (void)name;
     return true;
   }
-
-void setTxPower(int power) {
-    (void)power;
-}
 
 private:
   int currentMode = WIFI_OFF;

@@ -98,13 +98,23 @@ public:
         normalize();
     }
 
-#ifdef __FlashStringHelper
     DateTime(const __FlashStringHelper* date, const __FlashStringHelper* time)
     {
         parseCompileDateTime(String(date), String(time));
         normalize();
     }
-#endif
+
+    DateTime(const __FlashStringHelper* date, const char* time)
+    {
+        parseCompileDateTime(String(date), String(time));
+        normalize();
+    }
+
+    DateTime(const char* date, const __FlashStringHelper* time)
+    {
+        parseCompileDateTime(String(date), String(time));
+        normalize();
+    }
 
     uint16_t year() const
     {

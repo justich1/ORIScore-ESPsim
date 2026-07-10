@@ -182,6 +182,16 @@ void U8G2::emitConfig() {
 
 void U8G2::emitFrame() {
   if (_sleep) return;
+
+  // Neodesílat stále dokola totožný snímek. Náhled pak nemusí
+  // měnit Bitmapu při každém průchodu loop() a neproblikává.
+  if (_hasLastEmittedFrame && _lastEmittedBuffer == _buffer) {
+    return;
+  }
+
+  _lastEmittedBuffer = _buffer;
+  _hasLastEmittedFrame = true;
+
   std::ostringstream oss;
   oss << "DISPLAYFRAME W=" << _width << " H=" << _height << " HEX=";
   oss << std::hex << std::setfill('0');

@@ -2,8 +2,8 @@
   "Kind": "libraries",
   "Id": "LittleFS",
   "Name": "LittleFS",
-  "Version": "1.0.0",
-  "Description": "ORIScore ESPsim fake/sim knihovna",
+  "Version": "1.0.1",
+  "Description": "ORIScore ESPsim fake/sim knihovna – doplněna metoda LittleFS.format()",
   "Category": "sim",
   "Manifest": "libraries/LittleFS/library.json",
   "File": null,
@@ -11,14 +11,14 @@
     {
       "Path": "include/LittleFS.h",
       "Type": "header",
-      "Size": 1085,
-      "Sha256": "61cbd913c10f4f4047064fa90c0048281612e4e552907ea0a926507a1013296a"
+      "Size": 1098,
+      "Sha256": "e224461be4ae42ac3e15fb4e9df4aeb886aa386149111422bf55d04062cfbe93"
     },
     {
       "Path": "src/LittleFS.cpp",
       "Type": "source",
-      "Size": 4875,
-      "Sha256": "6c75be31c46e88b6cb4851287a0013d1f18493524d6d13cdf5791076616178f5"
+      "Size": 5104,
+      "Sha256": "f52e3cb2a25c12f6d77c3d7de3854c1b01f1ab775547a9a98c9a7a074363ea1b"
     }
   ]
 }

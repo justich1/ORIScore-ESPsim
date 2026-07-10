@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Arduino.h"
 
 class File {
@@ -34,6 +34,7 @@ private:
 class FakeLittleFSClass {
 public:
   bool begin(bool formatOnFail = false);
+  bool format();
   bool exists(const String& path);
   File open(const String& path, const String& mode);
   void remove(const String& path);

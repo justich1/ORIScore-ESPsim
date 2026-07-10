@@ -1,5 +1,8 @@
 #pragma once
 #include "Arduino.h"
+#ifndef UPDATE_SIZE_UNKNOWN
+#define UPDATE_SIZE_UNKNOWN 0xFFFFFFFFu
+#endif
 class FakeUpdateClass {
 public:
   bool begin(size_t size = 0) { (void)size; _error = false; return true; }

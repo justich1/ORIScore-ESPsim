@@ -169,6 +169,18 @@ bool FakeLittleFSClass::begin(bool formatOnFail) {
   return true;
 }
 
+bool FakeLittleFSClass::format() {
+  loadAll();
+  gFiles.clear();
+
+  std::error_code ec;
+  std::filesystem::remove_all(fsRoot(), ec);
+  if (ec) return false;
+
+  std::filesystem::create_directories(fsRoot(), ec);
+  return !ec;
+}
+
 bool FakeLittleFSClass::exists(const String& path) {
   loadAll();
   return gFiles.find(normalizeFsPath(path)) != gFiles.end();

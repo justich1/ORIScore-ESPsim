@@ -1,1 +1,11 @@
-{"id":"wire","name":"Wire","version":"1.0.0","type":"library","description":"ORIScore ESPsim I2C stub"}
+{
+  "name": "Wire",
+  "version": "1.1.0-orisim",
+  "description": "ORIScore ESPsim I2C runtime with PCF8563/BM8563 RTC emulation",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "build": {
+    "includeDir": "include",
+    "srcDir": "src"
+  }
+}
